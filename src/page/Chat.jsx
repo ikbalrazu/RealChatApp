@@ -2,6 +2,7 @@ import React,{useState,useEffect,useRef} from 'react'
 import './Chat.css';
 import Conversation from '../components/Conversion/Conversation';
 import Chatbox from '../components/ChatBox/Chatbox';
+import SearchAndAdd from '../components/SearchAndAdd/SearchAndAdd';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import {io} from 'socket.io-client';
@@ -11,10 +12,11 @@ const Chat = () => {
   const loginpage = useNavigate();
   const socket = useRef();
   const [chats, setChats] = useState();
-  const [userid,setUserId] = useState([]);
+  const [chatMemberId,setChatMemberId] = useState([]);
   const [currentChat,setCurrentChat] = useState(null);
   const userInfo = JSON.parse(localStorage.getItem("userdetails"));
   
+
 
   const LogoutHandler = () =>{
     localStorage.removeItem("userdetails");
@@ -27,6 +29,11 @@ const Chat = () => {
         // console.log(user._id);
         const {data} = await axios.get(`/chat/${userInfo?.id}`)
         console.log("user chat data:",data);
+        // for(let i=0; i<data?.length; i++){
+        //   const chatmembers = data[i].members.find((member) => member !== userInfo?.id);
+        //   setChatMemberId(oldData => [...oldData,chatmembers]);
+        //   mymembers.push(chatmembers);
+        // }
         setChats(data);
         
 
@@ -83,19 +90,31 @@ const Chat = () => {
     return online ? true : false;
   };
 
+  const myChatMembers = (chatmembers) => {
+    let mymembers=[];
+    if(chatmembers){
+      for(let i=0; i<chatmembers?.length; i++){
+        const chatmember = chatmembers[i].members.find((member) => member !== userInfo?.id);
+        // setChatMemberId(oldData => [...oldData,chatmembers]);
+        mymembers.push(chatmember);
+      }
+      return mymembers;
+    }
+    
+
+  }
   
 
   return (
     <div className='container'>
-      <p id='msg'></p>
       <div><button onClick={LogoutHandler}>Logout</button></div>
       <div className="conversion">
-      <h1>Chat List</h1>
+      <SearchAndAdd members={myChatMembers(chats)}/>
+      <p>Chat List</p>
       {chats?.map((chat)=>(
         <div onClick={()=>setCurrentChat(chat)}>
           <Conversation 
           data={chat} 
-          userid={userid} 
           currentUserId={userInfo?.id}
           online={checkOnlineStatus(chat)}
           />

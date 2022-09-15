@@ -1,14 +1,13 @@
 import axios from 'axios';
 import React,{useEffect,useState} from 'react'
 
-const Conversation = ({data,userid,currentUserId,online}) => {
+const Conversation = ({data,currentUserId,online}) => {
   const [userData,setUserData] = useState([]);
   //let userData = [];
   
 
   useEffect(()=>{
     console.log(data);
-    console.log(userid);
     console.log(currentUserId);
     
     // for(let i=0;i<data?.length;i++){

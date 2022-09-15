@@ -14,7 +14,8 @@
 }
 
 .chatbox{
-    background-color: rgba(48, 52, 58, 0.788);
+    background-color: rgb(59, 57, 57);
     width: 65%;
     height: 550px;
+    padding: 10px;
 }

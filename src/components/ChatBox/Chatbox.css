@@ -7,13 +7,13 @@
     justify-content: center;
     gap: 5px;
     margin: 10px;
-    
+    color: white;
 }
 
 .chat-body{
     height: 360px;
-    border: 1px solid rgb(230, 230, 204);
-    border-radius: 15px;
+    /* border: 1px solid rgb(230, 230, 204); */
+    /* border-radius: 15px; */
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -22,6 +22,7 @@
 }
 .message{
     background: var(--buttonBg);
+    background-color: #838485;
     color: white;
     padding: 0.7rem;
     border-radius: 1rem 1rem 1rem 0;
