@@ -90,5 +90,18 @@ const getAllUsers = async(req,res) => {
       }
 }
 
+const getSelectedUser = async(req,res) => {
+    // const id = req.params.id;
+    const id = ["6320d82e14b88be49737c229","6320e1189cc67aad45b78797"];
+    console.log(id);
+    try{
+        const users = await User.find( { _id: { $nin: id } } )
+        console.log(users);
+        res.status(200).json(users);
+    }catch{
+        console.log("error");
+    }
+}
 
-module.exports = {registerUser,loginUser,getUser,getAllUsers}
+
+module.exports = {registerUser,loginUser,getUser,getAllUsers,getSelectedUser}
