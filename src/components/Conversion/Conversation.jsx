@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React,{useEffect,useState} from 'react'
 
-const Conversation = ({data,userid,currentUserId}) => {
+const Conversation = ({data,userid,currentUserId,online}) => {
   const [userData,setUserData] = useState([]);
   //let userData = [];
   
@@ -44,6 +44,7 @@ const Conversation = ({data,userid,currentUserId}) => {
     <div>
     <div className='conversation'>
     <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+    <span style={{color: online?"green":""}}>{online? "Online" : "Offline"}</span>
     <div>
     <p style={{fontSize:"20px"}}>{userData?.name}</p>
     </div>

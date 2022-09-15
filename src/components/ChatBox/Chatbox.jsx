@@ -1,27 +1,18 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect,useState,useRef } from 'react'
 import './Chatbox.css'
 import axios from 'axios';
 
-const Chatbox = ({chat,currentUser}) => {
+const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage}) => {
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
 
-    const handleSend = async() => {
-        console.log(newMessage);
-        const message = {
-            senderId : currentUser,
-            text: newMessage,
-            chatId: chat._id,
-        }
-        const {data} = await axios.post("/message",message);
-        setMessages([...messages,data]);
-        setNewMessage("");
-    }
+    
 
+    //fetching data for header
     useEffect(()=>{
-        console.log(chat);
-        console.log(currentUser);
+        // console.log(chat);
+        // console.log(currentUser);
         const userId = chat?.members?.find((id)=>id!==currentUser);
         console.log(userId);
         const getUserData = async () => {
@@ -37,6 +28,7 @@ const Chatbox = ({chat,currentUser}) => {
         if (chat !== null) getUserData();
     },[chat]);
 
+    //fetch messages
     useEffect(() => {
         const fetchMessages = async () => {
           try {
@@ -51,10 +43,42 @@ const Chatbox = ({chat,currentUser}) => {
         if (chat !== null) fetchMessages();
     }, [chat]);
 
+    //send message
+    const handleSend = async() => {
+        console.log(newMessage);
+        const message = {
+            senderId : currentUser,
+            text: newMessage,
+            chatId: chat._id,
+        }
+        const receiverId = chat.members.find((id)=>id!==currentUser);
+        //send message to socket server
+        setSendMessage({...message, receiverId})
+        //send message to database
+        try{
+            const {data} = await axios.post("/message",message);
+            setMessages([...messages,data]);
+            setNewMessage("");
+
+        }catch{
+            console.log("error");
+        }
+        
+    }
+
+    //Receive message from parent component
     useEffect(()=>{
+        console.log("Message Arrived: ", receivedMessage);
+        if(receivedMessage !== null && receivedMessage.chatId === chat?._id){
+            setMessages([...messages, receivedMessage]);
+        }
+    },[receivedMessage]);
 
-    },[]);
-
+    const scroll = useRef();
+    useEffect(()=>{
+        scroll.current?.scrollIntoView({ behavior: "smooth" });
+    },[messages]);
+    
   return (
     <div>
         <div className='chat-header'>
@@ -71,7 +95,7 @@ const Chatbox = ({chat,currentUser}) => {
         <div className="chat-body">
         {messages.map((message)=>(
             <>
-            <div>
+            <div ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
                 <span>{message.text}</span>
             </div>
             </>
