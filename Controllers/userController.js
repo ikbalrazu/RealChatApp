@@ -1,5 +1,6 @@
 const User = require("../Models/userModel.js");
 const bcrypt = require('bcrypt');
+const querystring = require('querystring');
 
 const registerUser = async(req,res) => {
 
@@ -91,12 +92,15 @@ const getAllUsers = async(req,res) => {
 }
 
 const getSelectedUser = async(req,res) => {
-    // const id = req.params.id;
-    const id = ["6320d82e14b88be49737c229","6320e1189cc67aad45b78797"];
-    console.log(id);
+    //const userid = req.params.userid;
+    const members = req.body;
+    console.log(members);
+    // const userid = JSON.parse(members);
+    // //const id = ["6320d82e14b88be49737c229","6320e1189cc67aad45b78797"];
+    // console.log(members);
     try{
-        const users = await User.find( { _id: { $nin: id } } )
-        console.log(users);
+        const users = await User.find( { _id: { $nin: members } } )
+        console.log(members);
         res.status(200).json(users);
     }catch{
         console.log("error");

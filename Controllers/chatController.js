@@ -36,4 +36,12 @@ const findChat = async (req, res) => {
   }
 };
 
+const deleteChat =()=>{
+  try{
+
+  }catch(error){
+    res.status(500).json(error);
+  }
+}
+
 module.exports = {createChat,userChats,findChat}

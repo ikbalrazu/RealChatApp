@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/:id', getUser);
 router.get('/',getAllUsers);
-router.get("/alluser/selectuser",getSelectedUser);
+router.post("/searchuser",getSelectedUser);
 router.post('/register',registerUser);
 router.post('/login',loginUser);
 
