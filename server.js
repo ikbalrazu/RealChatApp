@@ -38,16 +38,16 @@ app.get("/",(req,res)=>{
 })
 
 
-app.use('/user', UserRoute);
-app.use('/chat', ChatRoute);
-app.use('/message', MessageRoute);
+// app.use('/user', UserRoute);
+// app.use('/chat', ChatRoute);
+// app.use('/message', MessageRoute);
 
 const server = app.listen(port,function(error){
     if(error){
         console.log("server failed");
     }else{
         console.log("server success");
-        //connectDB();
+        connectDB();
     }
 })
 
