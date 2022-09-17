@@ -12,8 +12,8 @@ const { Socket } = require("socket.io");
 
 dotenv.config();
 const app = express();
-app.use(bodyParser.json({limit:"30mb", extended: true}));
-app.use(bodyParser.urlencoded({limit:"30mb", extended:true}));
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({limit:"30mb", extended:true}));
 
 app.use(cors());
 
@@ -47,7 +47,7 @@ const server = app.listen(port,function(error){
         console.log("server failed");
     }else{
         console.log("server success");
-        connectDB();
+        //connectDB();
     }
 })
 
