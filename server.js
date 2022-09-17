@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-const port = process.env.PORT || 4000
+const PORT = process.env.PORT || 4000
 
 //connect with mongodb
 const connectDB = async() =>{
@@ -42,7 +42,7 @@ app.use('/user', UserRoute);
 app.use('/chat', ChatRoute);
 app.use('/message', MessageRoute);
 
-const server = app.listen(port,function(error){
+const server = app.listen(PORT,function(error){
     if(error){
         console.log("server failed");
     }else{
