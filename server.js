@@ -42,7 +42,7 @@ app.use('/user', UserRoute);
 app.use('/chat', ChatRoute);
 app.use('/message', MessageRoute);
 
-const server = app.listen(PORT,'0.0.0.0',function(error){
+const server = app.listen(PORT,function(error){
     if(error){
         console.log("server failed");
     }else{
