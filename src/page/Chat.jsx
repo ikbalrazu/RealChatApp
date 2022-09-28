@@ -29,11 +29,6 @@ const Chat = () => {
         // console.log(user._id);
         const {data} = await axios.get(`/chat/${userInfo?.id}`)
         console.log("user chat data:",data);
-        // for(let i=0; i<data?.length; i++){
-        //   const chatmembers = data[i].members.find((member) => member !== userInfo?.id);
-        //   setChatMemberId(oldData => [...oldData,chatmembers]);
-        //   mymembers.push(chatmembers);
-        // }
         setChats(data);
         
 
@@ -91,7 +86,7 @@ const Chat = () => {
   };
 
   const myChatMembers = (chatmembers) => {
-    let mymembers=[];
+    let mymembers=[userInfo?.id];
     if(chatmembers){
       for(let i=0; i<chatmembers?.length; i++){
         const chatmember = chatmembers[i].members.find((member) => member !== userInfo?.id);
@@ -100,8 +95,6 @@ const Chat = () => {
       }
       return mymembers;
     }
-    
-
   }
   
 
@@ -109,7 +102,7 @@ const Chat = () => {
     <div className='container'>
       <div><button onClick={LogoutHandler}>Logout</button></div>
       <div className="conversion">
-      <SearchAndAdd members={myChatMembers(chats)}/>
+      <SearchAndAdd currentUser={userInfo?.id} handleChat={(value)=>setChats(value)}  members={myChatMembers(chats)}/>
       <p>Chat List</p>
       {chats?.map((chat)=>(
         <div onClick={()=>setCurrentChat(chat)}>

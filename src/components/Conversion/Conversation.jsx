@@ -7,7 +7,7 @@ const Conversation = ({data,currentUserId,online}) => {
   
 
   useEffect(()=>{
-    console.log(data);
+    //console.log(data);
     console.log(currentUserId);
     
     // for(let i=0;i<data?.length;i++){
@@ -26,7 +26,7 @@ const Conversation = ({data,currentUserId,online}) => {
       try
       {
         const {data} =await axios.get(`/user/${userId}`)
-        console.log(data);
+        //console.log(data);
         setUserData(data)
       }
       catch(error)
