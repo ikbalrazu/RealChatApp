@@ -1,5 +1,8 @@
+import { Box, Stack, Avatar, Badge, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import React,{useEffect,useState} from 'react'
+
 
 const Conversation = ({data,currentUserId,online}) => {
   const [userData,setUserData] = useState([]);
@@ -40,32 +43,33 @@ const Conversation = ({data,currentUserId,online}) => {
   },[])
 
   return (
-    <div>
-    <div className='conversation'>
-    <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
-    <span style={{color: online?"green":""}}>{online? "Online" : "Offline"}</span>
-    <div>
-    <p style={{fontSize:"20px"}}>{userData?.name}</p>
-    </div>
-      {/* <button onClick={()=>console.log(userData)}>click me</button> */}
-    {/* {userData?.map((userdata,index)=>{
-      return(
-        <div key={index} onClick={()=>{
-          
-        }}>
+    <Box sx={{marginLeft:"10px"}}>
+      <Stack direction="row" spacing={3}>
+      {/* <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+        
+        <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+      </StyledBadge> */}
+      <Badge color={online?"success":"primary"} overlap="circular" badgeContent=" " variant="dot">
+      <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+      </Badge>
+      <Typography style={{fontSize:"20px"}}>{userData?.name}</Typography>
+      </Stack>
+    </Box>
 
-          <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
-          <div>
-            <p style={{fontSize:"20px"}}>{userdata?.name}</p>
-          </div>
-          <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
-        </div>
-      )
-    })} */}
-    
-    </div>
-    <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
-    </div>
+    // <div>
+    // <div className='conversation'>
+    // <img src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+    // <span style={{color: online?"green":""}}>{online? "Online" : "Offline"}</span>
+    // <div>
+    // <p style={{fontSize:"20px"}}>{userData?.name}</p>
+    // </div>
+    // </div>
+    // <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
+    // </div>
   )
 }
 

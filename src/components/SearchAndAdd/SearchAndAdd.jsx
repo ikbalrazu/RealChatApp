@@ -72,7 +72,40 @@ const SearchAndAdd = ({members,currentUser,handleChat}) => {
   },[members]);
 
   return (
-    <div className='search'>
+    <>
+    <Box bgcolor="#fff" justifyContent="center">
+    <Autocomplete
+        sx={{width:"90%",marginLeft:"10px"}}
+        p={1}
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        options={searchResult}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => (
+          <TextField
+              {...params}
+              label="Search by name or email"
+              margin="normal"
+              variant="outlined"
+              InputProps={{ ...params.InputProps, type: 'search' }}
+              onClick={handleSearch}
+          />
+        )}
+        
+        renderOption={(props,option) => (
+          <>
+          <div>
+          <p>{option?.name}</p><button disabled={option.status} onClick={()=>addMembers(option?._id,props)} value="Add">{option.status ? "Added" : "Add"}</button>
+          </div>
+          
+          </>
+        )}
+        
+    />
+    </Box>
+
+    {/* <div className='search'>
     <div className="searchInput">
     <Autocomplete
         freeSolo
@@ -86,10 +119,8 @@ const SearchAndAdd = ({members,currentUser,handleChat}) => {
               label="Search by name or email"
               margin="normal"
               variant="outlined"
-              // value={search}
               InputProps={{ ...params.InputProps, type: 'search' }}
               onClick={handleSearch}
-              // onChange={(e)=>setSearch(e.target.value)}
           />
         )}
         
@@ -98,22 +129,13 @@ const SearchAndAdd = ({members,currentUser,handleChat}) => {
           <div>
           <p>{option?.name}</p><button disabled={option.status} onClick={()=>addMembers(option?._id,props)} value="Add">{option.status ? "Added" : "Add"}</button>
           </div>
-          
           </>
-          
-          // return (
-          //   <div style={{border:"2px solid AliceBlue",width:"100%",height:"10%",padding:"0px"}}>
-          //     <div style={{display:"flex",gap:"5px",padding:"2px"}}>
-          //     {/* <Avatar alt="Remy Sharp" style={{height:"30px",width:"30px"}} src={option.picture} /> */}
-          //     <p> {option.title} </p>
-          //     </div>
-          //   </div>
-          // );
         )}
         
       />
     </div>
-    </div>
+    </div> */}
+    </>
   )
 }
 
