@@ -37,14 +37,16 @@ const findChat = async (req, res) => {
 };
 
 const deleteChat = async (req,res) => {
-  const {chatid} = req.body;
+  //const {chatid} = req.body;
   try{
 
-    const deletechat = await ChatModel.findByIdAndRemove(chatid);
-    if(!deleteChat){
+    const deletechat = await ChatModel.findByIdAndRemove(req.params.id);
+    // console.log(deleteChat);
+    // res.status(200).json(deletechat);
+    if(!deletechat){
       res.send("Chat id not found");
     }else{
-      deleteChat.remove();
+      deletechat.remove();
       res.send("Chat user deleted.");
     }
 
