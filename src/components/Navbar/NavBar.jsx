@@ -28,9 +28,9 @@ export default function NavBar() {
           </Typography>
           <Button onClick={LogoutHandler} sx={{marginLeft:'15px'}} variant='contained'>Logout</Button>
 
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0,marginLeft:'100px'}} >
+          {/* <IconButton onClick={handleOpenUserMenu} sx={{ p: 0,marginLeft:'100px'}} >
             <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
-          </IconButton>
+          </IconButton> */}
 
           {/* <Fab variant="extended" color="primary" aria-label="add">
           <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />

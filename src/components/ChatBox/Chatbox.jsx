@@ -112,11 +112,11 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
     
   return (
     <>
-    <Box bgcolor="skyblue" p={1} sx={{height:"87vh"}}>
-    <div>
+    <Box bgcolor="skyblue" p={1}>
+    <div style={{height:"1000%"}}>
         {chat ? (
             <>
-            <Box >
+            <Box>
                 <Stack direction='row' spacing={1} justifyContent="start">
                 <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
                 <Box >
@@ -173,7 +173,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
                 marginTop: "20px",
             }}
             />
-            <div className="chat-body">
+            <div className="chat-body" style={{height:"60vh"}}>
             {messages.map((message)=>(
                 <>
                 <div ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
