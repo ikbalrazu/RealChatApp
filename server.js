@@ -7,7 +7,7 @@ const cors = require('cors');
 //route
 const UserRoute = require('./Routes/userRoute');
 const ChatRoute = require('./Routes/chatRoute');
-const MessageRoute = require('./routes/messageRoute'); 
+const MessageRoute = require('./Routes/messageRoute'); 
 const { Socket } = require("socket.io");
 
 dotenv.config();
