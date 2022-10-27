@@ -1,6 +1,8 @@
 import React,{useState} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import { Box,Button,TextField, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     const chatpage = useNavigate();
@@ -37,7 +39,30 @@ const Login = () => {
   return (
     <div>
 
-    <div className="login">Login</div>
+      <Box 
+      component="form"
+      maxWidth={400}  
+      sx={{display:"flex",flexDirection:"column",":hover":{boxShadow: "10px 10px 10px #ccc"}}} 
+      justifyContent={"center"}
+      alignItems="center"
+      margin="auto"
+      marginTop={5}
+      padding={3}
+      borderRadius={5}
+      gap={2.5}
+      boxShadow={3}
+      >
+      <Typography variant="h2">Sign In</Typography>
+      <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
+      <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
+      <Button variant='contained' onClick={LoginUser}>Login</Button>
+      <Typography>
+        <Link to="#">Forgot Password?</Link>
+      </Typography>
+      <Link style={{textDecoration:"none"}} to="register"><Button>Registration</Button></Link>
+      </Box>
+
+    {/* <div className="login">Login</div>
     <div className="email">
     <input type="text" onChange={(e) => setEmail(e.target.value.toLowerCase())} placeholder='Enter Email'/>
     </div>
@@ -47,7 +72,7 @@ const Login = () => {
     <button onClick={LoginUser}>Login</button>
     <div className="resigtration">
     <a href='/register'><button>Registration</button></a>
-    </div>
+    </div> */}
 
     </div>
   )
