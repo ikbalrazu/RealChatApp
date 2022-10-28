@@ -4,6 +4,8 @@ import {useNavigate} from 'react-router-dom';
 import { Box,Button,TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+import './Login.css';
+
 const Login = () => {
     const chatpage = useNavigate();
     const [email,setEmail] = useState();
@@ -12,9 +14,10 @@ const Login = () => {
     const LoginUser = async() => {
         if (!email || !password) {
             console.log("Please fill the all fields");
-        }else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            console.log("Invalid Email !.");
         }
+        //else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+        //     console.log("Invalid Email !.");
+        // }
         else{
             const data = await axios.post("/user/login",{email,password});
             
@@ -37,11 +40,13 @@ const Login = () => {
     }
     
   return (
-    <div>
+    <div className='container'>
 
-      <Box 
+      <Box
+      bgcolor={"white"}
       component="form"
-      maxWidth={400}  
+      maxWidth={330}
+      maxHeight={1000}  
       sx={{display:"flex",flexDirection:"column",":hover":{boxShadow: "10px 10px 10px #ccc"}}} 
       justifyContent={"center"}
       alignItems="center"
@@ -51,6 +56,7 @@ const Login = () => {
       borderRadius={5}
       gap={2.5}
       boxShadow={3}
+      sm={2}
       >
       <Typography variant="h2">Sign In</Typography>
       <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
@@ -60,6 +66,7 @@ const Login = () => {
         <Link to="#">Forgot Password?</Link>
       </Typography>
       <Link style={{textDecoration:"none"}} to="register"><Button>Registration</Button></Link>
+
       </Box>
 
     {/* <div className="login">Login</div>

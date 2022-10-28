@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import { Box,Button,TextField, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
     const [name,setName] = useState();
@@ -23,7 +25,36 @@ const Register = () => {
 
   return (
     <div>
-    <div className="login">Registration</div>
+
+    <Box
+        bgcolor={"white"}
+        component="form"
+        maxWidth={330} 
+        sx={{display:"flex",flexDirection:"column",":hover":{boxShadow: "10px 10px 10px #ccc"}}} 
+        justifyContent={"center"}
+        alignItems="center"
+        margin="auto"
+        marginTop={5}
+        padding={3}
+        borderRadius={5}
+        gap={2.5}
+        boxShadow={3}
+        sm={2}
+        >
+        <Typography variant="h2">Sign Up</Typography>
+        <TextField type={'text'} onChange={(e) => setName(e.target.value)} id="outlined-basic" label="Name" variant="outlined"/>
+        <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
+        <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
+        <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Confirm Password" variant="outlined"/>
+        <Button variant='contained' onClick={RegisterUser}>Let's Go</Button>
+
+        <Typography>
+            <Link to="/">Already have an account!</Link>
+        </Typography>
+
+    </Box>
+
+    {/* <div className="login">Registration</div>
     <div className="name">
     <input type="text" onChange={(e) => setName(e.target.value)} placeholder='Enter Name'/>
     </div>
@@ -39,7 +70,7 @@ const Register = () => {
     <button onClick={RegisterUser}>Registration</button>
     <div className="resigtration">
     <a href='/'><button>Already have an account!</button></a>
-    </div>
+    </div> */}
     </div>
   )
 }
