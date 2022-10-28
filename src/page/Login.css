@@ -1,8 +1,19 @@
+
 body{
-    /* background-color: aliceblue; */
+    background-color: aliceblue;
+    /* background: linear-gradient(#ebca82, #4BE1EC);
+    background-repeat: no-repeat;
+    background-attachment: fixed; */
+    /* height: 100%;
+    margin: 0; */
+}
+
+/* .container{
+    display: block;
+    height: 100vh;
     background: linear-gradient(#ebca82, #4BE1EC);
     background-repeat: no-repeat;
     background-attachment: fixed;
-}
+} */
 
 

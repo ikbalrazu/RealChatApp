@@ -8,6 +8,14 @@ import { Stack } from '@mui/system';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+//for dialog box
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+
 const ITEM_HEIGHT = 48;
 
 const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) => {
@@ -109,6 +117,17 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
 
 
     }
+
+    //Dialog Box for user profile
+    // const [open, setOpen] = useState(false);
+
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
+
+    // const handleClose = () => {
+    //     setOpen(false);
+    // };
     
   return (
     <>

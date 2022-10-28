@@ -145,7 +145,7 @@ const Chat = () => {
       </Stack>
       </Box>
 
-      <Box bgcolor="yellow" sx={{display:{xs:"none", sm:"block"},width:"65%",height:"80vh"}}>
+      <Box bgcolor="aliceblue" sx={{display:{xs:"none", sm:"block"},width:"65%",height:"80vh"}}>
       <Chatbox 
       chat={currentChat} 
       currentUser={userInfo?.id}

@@ -29,8 +29,12 @@ const Register = () => {
     <Box
         bgcolor={"white"}
         component="form"
-        maxWidth={330} 
-        sx={{display:"flex",flexDirection:"column",":hover":{boxShadow: "10px 10px 10px #ccc"}}} 
+        maxWidth={320} 
+        sx={{
+        display:"flex",flexDirection:"column",
+        // ":hover":{boxShadow: "10px 10px 10px #ccc"
+        // }
+        }} 
         justifyContent={"center"}
         alignItems="center"
         margin="auto"
@@ -46,6 +50,18 @@ const Register = () => {
         <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
         <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
         <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Confirm Password" variant="outlined"/>
+        
+        {/* <Button
+        variant="contained"
+        component="label"
+        >
+        Upload File
+        <input
+            type="file"
+            disabled
+        />
+        </Button> */}
+
         <Button variant='contained' onClick={RegisterUser}>Let's Go</Button>
 
         <Typography>
