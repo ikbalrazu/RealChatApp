@@ -1,10 +1,12 @@
 const User = require("../Models/userModel.js");
 const bcrypt = require('bcrypt');
 const querystring = require('querystring');
+const cloudinary = require('../Confiq/cloudinary');
+
 
 const registerUser = async(req,res) => {
 
-    const {name, email} = req.body;
+    const {name, email, picture} = req.body;
     try{
 
         const salt = await bcrypt.genSalt(10);
@@ -20,6 +22,7 @@ const registerUser = async(req,res) => {
                 name,
                 email,
                 password,
+                picture,
             })
     
             if(user){
@@ -27,6 +30,7 @@ const registerUser = async(req,res) => {
                     _id:user._id,
                     name:user.name,
                     email:user.email,
+                    picture:user.picture,
                 });
             }else{
                 res.status(400).json({message:"Failed to create the user"});
@@ -107,5 +111,62 @@ const getSelectedUser = async(req,res) => {
     }
 }
 
+const ExistUser = async(req,res)=>{
+    const {email} = req.body;
+    console.log(email);
+    const userExists = await User.findOne({email});
 
-module.exports = {registerUser,loginUser,getUser,getAllUsers,getSelectedUser}
+    if(userExists){
+        res.json({message:"User already exists"});
+    }else{
+        res.json({message:"New user found"});
+    }
+}
+
+const uploadImage = async(req,res) =>{
+    
+}
+
+const DeleteImage = async(req,res) =>{
+    try {
+        const {public_id} = req.body;
+        console.log(public_id);
+        
+        if(public_id){
+            await cloudinary.uploader.destroy(public_id,function(err,result){
+                if(err){
+                    res.json({msg:"Image Not Deleted"})
+                }else{
+                    //console.log(result?.info);
+                    res.json({msg: "Deleted Image"})
+                }
+            });
+        }
+
+        // cloudinary.v1_1.uploader.destroy(public_id, async(err, result) =>{
+        //     if(err){
+        //         res.json({msg:"Image Not Deleted"})
+        //     }else{
+        //         console.log(result);
+        //         res.json({msg: "Deleted Image"})
+        //     }
+
+            
+        // })
+
+        // if(!public_id) return res.status(400).json({msg: 'No images Selected'})
+
+        // cloudinary.v2.uploader.destroy(public_id, async(err, result) =>{
+        //     if(err) throw err;
+
+        //     res.json({msg: "Deleted Image"})
+        // })
+
+    } catch (err) {
+        return res.status(500).json({msg: err.message})
+    }
+}
+
+
+
+module.exports = {registerUser,loginUser,getUser,getAllUsers,getSelectedUser,ExistUser,uploadImage,DeleteImage}
