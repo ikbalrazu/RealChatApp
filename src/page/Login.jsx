@@ -80,26 +80,13 @@ const Login = () => {
       {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
       <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
       <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
-      <Button variant='contained' onClick={LoginUser}>Login</Button>
+      <Button variant='contained' onClick={LoginUser}>Let's Go</Button>
       <Typography>
         <Link to="forgotpassword">Forgot Password?</Link>
       </Typography>
       <Link style={{textDecoration:"none"}} to="register"><Button>Registration</Button></Link>
       {loader ? <LinearProgress sx={{ width: '100%' }}/> : <></>}
       </Box>
-
-    {/* <div className="login">Login</div>
-    <div className="email">
-    <input type="text" onChange={(e) => setEmail(e.target.value.toLowerCase())} placeholder='Enter Email'/>
-    </div>
-    <div className="password">
-    <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder='Enter Password'/>
-    </div>
-    <button onClick={LoginUser}>Login</button>
-    <div className="resigtration">
-    <a href='/register'><button>Registration</button></a>
-    </div> */}
-
     </div>
   )
 }

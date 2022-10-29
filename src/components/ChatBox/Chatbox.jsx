@@ -137,7 +137,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
             <>
             <Box>
                 <Stack direction='row' spacing={1} justifyContent="start">
-                <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+                <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>
                 <Box >
                 <Typography sx={{marginTop:"10px"}}>
                     {userData?.name}

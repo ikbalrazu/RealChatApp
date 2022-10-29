@@ -54,7 +54,7 @@ const Conversation = ({data,currentUserId,online}) => {
         <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
       </StyledBadge> */}
       <Badge color={online?"success":"primary"} overlap="circular" badgeContent=" " variant="dot">
-      <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" style={{ width: "50px", height: "50px" }}/>
+      <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>
       </Badge>
       <Typography style={{fontSize:"20px"}}>{userData?.name}</Typography>
       </Stack>
