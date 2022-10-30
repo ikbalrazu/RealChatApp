@@ -5,8 +5,8 @@ import App from './App';
 import {BrowserRouter} from 'react-router-dom';
 import axios from 'axios';
 
-//axios.defaults.baseURL = "http://localhost:5000";
-axios.defaults.baseURL = "https://realchatapp-api.onrender.com";
+axios.defaults.baseURL = "http://localhost:5000";
+//axios.defaults.baseURL = "https://realchatapp-api.onrender.com";
 
 //export const frontendurl = "http://localhost:3000";
 //export const frontendurl = "https://investmentportal.netlify.app";
