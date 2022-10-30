@@ -2,6 +2,7 @@ const User = require("../Models/userModel.js");
 const bcrypt = require('bcrypt');
 const querystring = require('querystring');
 const cloudinary = require('../Confiq/cloudinary');
+const transporter = require('../Confiq/nodemailer');
 
 
 const registerUser = async(req,res) => {
@@ -26,12 +27,32 @@ const registerUser = async(req,res) => {
             })
     
             if(user){
+                var mailOptions = {
+                    from: ' "PrivateChatApp" <iqbalraju123@gmail.com>',
+                    to: email,
+                    subject: 'Activate your PrivateChatApp account',
+                    html: `<p>Hi ${name},<br> Thank you for signing up for PrivateChatApp.<br> Best,<br> The PrivateChatApp Team. </p>`
+                }
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                      //console.log(error);
+                      res.json(error.message);
+                      //console.log(email);
+                    } else {
+                
+                      res.json({ message: "send email successfully" });
+                      //console.log('Email sent: ' + info.response);
+                
+                    }
+                });
+
                 res.status(200).json({
                     _id:user._id,
                     name:user.name,
                     email:user.email,
                     picture:user.picture,
                 });
+
             }else{
                 res.status(400).json({message:"Failed to create the user"});
                 
@@ -123,6 +144,41 @@ const ExistUser = async(req,res)=>{
     }
 }
 
+const ResetPasswordLink = async(req,res) => {
+    const email = req.params.email;
+    console.log(email);
+    const token = "hello12345"
+    const userExists = await User.findOne({email});
+
+    if(userExists){
+        //res.json({message:"User already exists"});
+
+        var mailOptions = {
+            from: ' "PrivateChatApp" <iqbalraju123@gmail.com>',
+            to: email,
+            subject: 'Set New User',
+            html: `<p>Hi ${userExists?.name}<br> You have been requested to set new password.<br> Here is the set new password Link:<br>
+            <a href="http://localhost:3000/resetpassword/${userExists?._id}/${token}">http://localhost:3000/resetpassword/${userExists?._id}/${token}</a>
+            </p>`
+        }
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              //console.log(error);
+              res.json(error.message);
+              //console.log(email);
+            } else {
+        
+              res.json({ message: "send email successfully" });
+              //console.log('Email sent: ' + info.response);
+        
+            }
+        });
+
+    }else{
+        res.json({message:"User not found"});
+    }
+}
+
 const uploadImage = async(req,res) =>{
     
 }
@@ -169,4 +225,4 @@ const DeleteImage = async(req,res) =>{
 
 
 
-module.exports = {registerUser,loginUser,getUser,getAllUsers,getSelectedUser,ExistUser,uploadImage,DeleteImage}
+module.exports = {registerUser,loginUser,getUser,getAllUsers,getSelectedUser,ExistUser,uploadImage,DeleteImage,ResetPasswordLink}
