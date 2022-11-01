@@ -6,6 +6,7 @@ import ForgotPassword from './page/ForgotPassword';
 import {Route,Routes} from 'react-router-dom';
 import RegisterSucccess from './components/RegisterSuccess';
 import ResetPassword from './page/ResetPassword';
+import FormSubmit from './page/FormSubmit';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/chat" element={<Chat/>}/>
         <Route path="/forgotpassword" element={<ForgotPassword/>}/>
         <Route path="/resetpassword/:id/:token" element={<ResetPassword/>}/>
+        <Route path="/formsubmit" element={<FormSubmit/>}/>
         
       </Routes>
     </div>

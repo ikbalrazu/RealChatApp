@@ -5,6 +5,7 @@ import { Box,Button,TextField, Typography } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Link } from 'react-router-dom';
+import {useForm, Controller} from 'react-hook-form';
 
 import './Login.css';
 
@@ -15,51 +16,56 @@ const Login = () => {
     const [alert,setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
     const [loader,setLoader] = useState(false);
+
+    const {handleSubmit, control, formState:{errors}} = useForm();
     
-    const LoginUser = async() => {
-        if (!email || !password) {
-            console.log("Please fill the all fields");
-            setAlertContent("Please fill the all fields");
-            setAlert(true);
-        }
-        else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            console.log("Invalid Email !.");
-            setAlertContent("Invalid Email !");
-            setAlert(true);
-        }
-        else{
-          setAlertContent(" ");
-          setAlert(false);
-            setLoader(true);
-            const data = await axios.post("/user/login",{email,password});
+    const LoginUser = async(data) => {
+      e.preventDefault();
+
+      console.log("data:",data);
+        // if (!email || !password) {
+        //     console.log("Please fill the all fields");
+        //     setAlertContent("Please fill the all fields");
+        //     setAlert(true);
+        // }
+        // else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+        //     console.log("Invalid Email !.");
+        //     setAlertContent("Invalid Email !");
+        //     setAlert(true);
+        // }
+        // else{
+        //   setAlertContent(" ");
+        //   setAlert(false);
+        //     setLoader(true);
+        //     const data = await axios.post("/user/login",{email,password});
             
-            if(data?.data?.message === "User Not Found"){
-                setLoader(false);
-                console.log("User Not Found");
-                setAlertContent("User Not Found.");
-                setAlert(true);
-            }else{
-                setAlert(false);
-                setLoader(true);
-                console.log(data?.data);
-                localStorage.setItem(
-                    "userdetails",
-                    JSON.stringify({
-                      id:data?.data?._id,
-                      name:data?.data?.name,
-                      email:data?.data?.email,
-                      picture:data?.data?.picture,
-                    })
-                  );
-                  setLoader(false);
-                chatpage("/chat");
-            }
-        }
+        //     if(data?.data?.message === "User Not Found"){
+        //         setLoader(false);
+        //         console.log("User Not Found");
+        //         setAlertContent("User Not Found.");
+        //         setAlert(true);
+        //     }else{
+        //         setAlert(false);
+        //         setLoader(true);
+        //         console.log(data?.data);
+        //         localStorage.setItem(
+        //             "userdetails",
+        //             JSON.stringify({
+        //               id:data?.data?._id,
+        //               name:data?.data?.name,
+        //               email:data?.data?.email,
+        //               picture:data?.data?.picture,
+        //             })
+        //           );
+        //           setLoader(false);
+        //         chatpage("/chat");
+        //     }
+        // }
     }
     
   return (
     <div className='container'>
-
+      <form onSubmit={handleSubmit(LoginUser)}>
       <Box
       bgcolor={"white"}
       component="form"
@@ -77,16 +83,53 @@ const Login = () => {
       sm={2}
       >
       <Typography variant="h2">Sign In</Typography>
-      {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
-      <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
-      <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
-      <Button variant='contained' onClick={LoginUser}>Let's Go</Button>
+
+      {/* {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> } */}
+
+      <Controller
+      name="email"
+      control={control}
+      render={({field})=>(
+        <TextField 
+        type={'email'}
+        fullWidth
+        name='email'
+        {...field}
+        // onChange={(e) => setEmail(e.target.value.toLowerCase())} 
+        id="outlined-basic" 
+        label="Email" 
+        variant="outlined"
+        />
+      )}
+      />
+
+      {/* <TextField 
+      type={"password"}
+      fullWidth
+      name='password'
+      {...register('password')}
+      // onChange={(e) => setPassword(e.target.value)} 
+      id="outlined-basic" 
+      label="Password" 
+      variant="outlined"
+      /> */}
+
+      <Button 
+      variant='contained'
+      type="submit" 
+      //onClick={LoginUser}
+      >
+      Let's Go
+      </Button>
+      
+
       <Typography>
         <Link to="forgotpassword">Forgot Password?</Link>
       </Typography>
       <Link style={{textDecoration:"none"}} to="register"><Button>Registration</Button></Link>
       {loader ? <LinearProgress sx={{ width: '100%' }}/> : <></>}
       </Box>
+      </form>
     </div>
   )
 }
