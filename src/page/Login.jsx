@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useReducer} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { Box,Button,TextField, Typography } from '@mui/material';
@@ -17,6 +17,46 @@ const Login = () => {
     const [alert,setAlert] = useState(false);
     const [alertContent, setAlertContent] = useState('');
     const [loader,setLoader] = useState(false);
+
+    const intial_state = {
+      alert: false,
+      alertContent:"",
+      loader:false,
+    }
+
+    const reducer = (state, action)=>{
+      if(action.type === "SET_ALERT"){
+        return{
+          ...state,
+          alert:action.payload,
+          alertContent:'',
+          loader:false
+          
+        }
+      }else if(action.type === "SET_ALERT_CONTENT"){
+        return{
+          ...state,
+          alert:false,
+          alertContent:action.payload,
+          loader:false
+
+        }
+      }else if(action.type === "SET_LOADER"){
+        return{
+          ...state,
+          alert:false,
+          alertContent:'',
+          loader:true,
+
+
+        }
+      }
+
+    }
+
+    const {state, dispatch} = useReducer(reducer,intial_state);
+
+    console.log(state);
 
     const SignupSchema = yup.object().shape({
       email: yup.string().required('Email is required').email('Email is invalid'),
@@ -37,19 +77,25 @@ const Login = () => {
 
       try{
 
-        setLoader(true);
+        //setLoader(true);
+        dispatch({type:"SET_LOADER"});
 
         const data = await axios.post("/user/login",{email,password});
 
         if(data?.data?.message === "User Not Found"){
           
-          setLoader(false);
+          //setLoader(false);
+          dispatch({type:"SET_LOADER",payload:false});
           console.log("User Not Found this email");
-          setAlertContent("User Not Found this email.");
-          setAlert(true);
+          //setAlertContent("User Not Found this email.");
+          dispatch({type:"SET_ALERT_CONTENT",payload:"User Not Found this email."});
+          //setAlert(true);
+          dispatch({type:"SET_ALERT",payload:true});
         }else{
-          setAlert(false);
-          setLoader(true);
+          //setAlert(false);
+          dispatch({type:"SET_ALERT",payload:false});
+          //setLoader(true);
+          dispatch({type:"SET_LOADER",payload:true});
           //console.log(data?.data);
           localStorage.setItem(
             "userdetails",
@@ -60,15 +106,19 @@ const Login = () => {
               picture:data?.data?.picture,
             })
           );
-          setLoader(false);
+          //setLoader(false);
+          dispatch({type:"SET_LOADER",payload:false});
           chatpage("/chat");
         }
 
       }catch(error){
-        if(error && error.response.status === 400){
-          setAlertContent("wrong password.");
-          setAlert(true);
-          setLoader(false);
+        if(error && error?.response?.status === 400){
+          //setAlertContent("wrong password.");
+          dispatch({type:"SET_ALERT_CONTENT",payload:"Wrong Password."});
+          //setAlert(true);
+          dispatch({type:"SET_ALERT",payload:true});
+          //setLoader(false);
+          dispatch({type:"SET_LOADER",payload:false});
         }
       }
       
@@ -141,7 +191,7 @@ const Login = () => {
       >
       <Typography variant="h2">Sign In</Typography>
 
-      {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
+      {state?.alert ? <Alert severity='error'>{state?.alertContent}</Alert> : <></> }
 
 
       
