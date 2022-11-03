@@ -12,11 +12,10 @@ import * as yup from "yup";
 import './Login.css';
 
 const Login = () => {
-    // const chatpage = useNavigate();
-    // const [email,setEmail] = useState();
-    // const [password,setPassword] = useState();
-    // const [alert,setAlert] = useState(false);
-    // const [alertContent, setAlertContent] = useState('');
+    const chatpage = useNavigate();
+    
+    const [alert,setAlert] = useState(false);
+    const [alertContent, setAlertContent] = useState('');
     const [loader,setLoader] = useState(false);
 
     const SignupSchema = yup.object().shape({
@@ -33,10 +32,47 @@ const Login = () => {
     });
     
     const onSubmit = async(value) => {
+      const email = value?.email;
+      const password = value?.password;
 
-      console.log("data:",value);
-      setLoader(true);
-      //const data = await axios.post("/user/login",{value.email,valuepassword});
+      try{
+
+        setLoader(true);
+
+        const data = await axios.post("/user/login",{email,password});
+
+        if(data?.data?.message === "User Not Found"){
+          
+          setLoader(false);
+          console.log("User Not Found this email");
+          setAlertContent("User Not Found this email.");
+          setAlert(true);
+        }else{
+          setAlert(false);
+          setLoader(true);
+          //console.log(data?.data);
+          localStorage.setItem(
+            "userdetails",
+            JSON.stringify({
+              id:data?.data?._id,
+              name:data?.data?.name,
+              email:data?.data?.email,
+              picture:data?.data?.picture,
+            })
+          );
+          setLoader(false);
+          chatpage("/chat");
+        }
+
+      }catch(error){
+        if(error && error.response.status === 400){
+          setAlertContent("wrong password.");
+          setAlert(true);
+          setLoader(false);
+        }
+      }
+      
+      
 
         // if (!email || !password) {
         //     console.log("Please fill the all fields");
@@ -78,10 +114,10 @@ const Login = () => {
         // }
     }
 
-    const style = {
-      margin: "auto",
-      "max-width": "300px"
-    };
+    // const style = {
+    //   margin: "auto",
+    //   "max-width": "300px"
+    // };
     
   return (
     <div>
@@ -105,7 +141,7 @@ const Login = () => {
       >
       <Typography variant="h2">Sign In</Typography>
 
-      {/* {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> } */}
+      {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
 
 
       
