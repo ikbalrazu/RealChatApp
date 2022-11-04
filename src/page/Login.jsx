@@ -1,4 +1,4 @@
-import React,{useState,useReducer} from 'react';
+import React,{useReducer} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { Box,Button,TextField, Typography } from '@mui/material';
@@ -8,63 +8,43 @@ import { Link } from 'react-router-dom';
 import {useForm, Controller} from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { Initial_State } from '../Reducer/reducer';
+import reducer from '../Reducer/reducer';
 
 import './Login.css';
 
 const Login = () => {
     const chatpage = useNavigate();
-    
-    const [alert,setAlert] = useState(false);
-    const [alertContent, setAlertContent] = useState('');
-    const [loader,setLoader] = useState(false);
 
-    const intial_state = {
-      alert: false,
-      alertContent:"",
-      loader:false,
-    }
+    // const reducer = (state, action)=>{
+    //   if(action.type === "SET_ALERT"){
+    //     return{
+    //       ...state,
+    //       alert:action.payload,
+    //     }
+    //   }else if(action.type === "SET_ALERT_CONTENT"){
+    //     return{
+    //       ...state,
+    //       alertContent:action.payload,
 
-    const reducer = (state, action)=>{
-      if(action.type === "SET_ALERT"){
-        return{
-          ...state,
-          alert:action.payload,
-          alertContent:'',
-          loader:false
-          
-        }
-      }else if(action.type === "SET_ALERT_CONTENT"){
-        return{
-          ...state,
-          alert:false,
-          alertContent:action.payload,
-          loader:false
+    //     }
+    //   }else if(action.type === "SET_LOADER"){
+    //     return{
+    //       ...state,
+    //       loader:action.payload,
+    //     }
+    //   }
 
-        }
-      }else if(action.type === "SET_LOADER"){
-        return{
-          ...state,
-          alert:false,
-          alertContent:'',
-          loader:true,
+    // }
 
+    const [state, dispatch] = useReducer(reducer,Initial_State);
 
-        }
-      }
-
-    }
-
-    const {state, dispatch} = useReducer(reducer,intial_state);
-
-    console.log(state);
 
     const SignupSchema = yup.object().shape({
       email: yup.string().required('Email is required').email('Email is invalid'),
       password: yup.string()
       .required('Password is required')
       .min(8, 'Password must contain at least 8 characters'),
-      // age: yup.number().required().positive().integer(),
-      // website: yup.string().url()
     });
 
     const { handleSubmit, control, formState: { errors } } = useForm({
@@ -76,27 +56,19 @@ const Login = () => {
       const password = value?.password;
 
       try{
-
-        //setLoader(true);
-        dispatch({type:"SET_LOADER"});
+        dispatch({type:"SET_LOADER",payload:true});
 
         const data = await axios.post("/user/login",{email,password});
 
         if(data?.data?.message === "User Not Found"){
           
-          //setLoader(false);
           dispatch({type:"SET_LOADER",payload:false});
           console.log("User Not Found this email");
-          //setAlertContent("User Not Found this email.");
           dispatch({type:"SET_ALERT_CONTENT",payload:"User Not Found this email."});
-          //setAlert(true);
           dispatch({type:"SET_ALERT",payload:true});
         }else{
-          //setAlert(false);
           dispatch({type:"SET_ALERT",payload:false});
-          //setLoader(true);
           dispatch({type:"SET_LOADER",payload:true});
-          //console.log(data?.data);
           localStorage.setItem(
             "userdetails",
             JSON.stringify({
@@ -106,62 +78,18 @@ const Login = () => {
               picture:data?.data?.picture,
             })
           );
-          //setLoader(false);
           dispatch({type:"SET_LOADER",payload:false});
           chatpage("/chat");
         }
 
       }catch(error){
         if(error && error?.response?.status === 400){
-          //setAlertContent("wrong password.");
+          
           dispatch({type:"SET_ALERT_CONTENT",payload:"Wrong Password."});
-          //setAlert(true);
           dispatch({type:"SET_ALERT",payload:true});
-          //setLoader(false);
           dispatch({type:"SET_LOADER",payload:false});
         }
       }
-      
-      
-
-        // if (!email || !password) {
-        //     console.log("Please fill the all fields");
-        //     setAlertContent("Please fill the all fields");
-        //     setAlert(true);
-        // }
-        // else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-        //     console.log("Invalid Email !.");
-        //     setAlertContent("Invalid Email !");
-        //     setAlert(true);
-        // }
-        // else{
-        //   setAlertContent(" ");
-        //   setAlert(false);
-        //     setLoader(true);
-        //     const data = await axios.post("/user/login",{email,password});
-            
-        //     if(data?.data?.message === "User Not Found"){
-        //         setLoader(false);
-        //         console.log("User Not Found");
-        //         setAlertContent("User Not Found.");
-        //         setAlert(true);
-        //     }else{
-        //         setAlert(false);
-        //         setLoader(true);
-        //         console.log(data?.data);
-        //         localStorage.setItem(
-        //             "userdetails",
-        //             JSON.stringify({
-        //               id:data?.data?._id,
-        //               name:data?.data?.name,
-        //               email:data?.data?.email,
-        //               picture:data?.data?.picture,
-        //             })
-        //           );
-        //           setLoader(false);
-        //         chatpage("/chat");
-        //     }
-        // }
     }
 
     // const style = {
@@ -205,7 +133,6 @@ const Login = () => {
               label="email"
               error={!!errors['email']}
               helperText={errors['email'] ? errors['email'].message : ''}
-              // helperText={errors?.email ? errors?.email?.message : ""}
               type="email"
               fullWidth
               />
@@ -224,8 +151,6 @@ const Login = () => {
             {...field}
             error={!!errors['password']}
             helperText={errors['password'] ? errors['password'].message : ''}
-            // helperText={errors?.password ? errors?.password?.message : ""}
-            // onChange={(e) => setPassword(e.target.value)} 
             id="outlined-basic" 
             label="Password" 
             variant="outlined"
@@ -238,7 +163,6 @@ const Login = () => {
       <Button 
       variant='contained'
       type="submit" 
-      //onClick={LoginUser}
       >
       Let's Go
       </Button>
@@ -249,7 +173,7 @@ const Login = () => {
         <Link to="forgotpassword">Forgot Password?</Link>
       </Typography>
       <Link style={{textDecoration:"none"}} to="register"><Button>Registration</Button></Link>
-      {loader ? <LinearProgress sx={{ width: '100%' }}/> : <></>}
+      {state?.loader ? <LinearProgress sx={{ width: '100%' }}/> : <></>}
       </Box>
       
     </div>

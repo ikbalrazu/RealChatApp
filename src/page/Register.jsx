@@ -1,17 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState,useReducer} from 'react';
 import axios from 'axios';
 import { Box,Button,Stack,TextField, Typography } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import Alert from '@mui/material/Alert';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Link, useNavigate } from 'react-router-dom';
+import {useForm, Controller} from 'react-hook-form';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Register_User } from '../Reducer/reducer';
+import reducer from '../Reducer/reducer';
 
 const Register = () => {
     const loginpage = useNavigate();
-    const [name,setName] = useState();
-    const [email,setEmail] = useState();
-    const [password,setPassword] = useState();
-    const [confirmpassword,setConfirmPassword] = useState();
 
     //alert handling
     const [alert,setAlert] = useState(false);
@@ -25,35 +26,37 @@ const Register = () => {
 
     const [loader,setLoader] = useState(false);
 
-    const RegisterForm = async() =>{
-        //console.log(name, email, password, confirmpassword);
-        if (!name || !email || !password || !confirmpassword) {
-            console.log("Please complete all mandatory information!");
-            setAlertContent("Please complete all mandatory information !");
-            setAlert(true);
-        } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            console.log("Invalid Email entered.");
-            setAlertContent("Invalid Email entered.");
-            setAlert(true);
-        } else if(password !== confirmpassword){
-            console.log("password is not match!");
-            setAlertContent("Password is not match !");
+    const SignupSchema = yup.object().shape({
+        name: yup.string().required('Name is required'),
+        email: yup.string().required('Email is required').email('Email is invalid'),
+        password: yup.string()
+        .required('Password is required')
+        .min(8, 'Password must contain at least 8 characters'),
+        confirmpassword: yup.string().oneOf([yup.ref('password'), null], 'Password must match')
+    });
+
+    const { handleSubmit, control, formState: { errors } } = useForm({
+        resolver: yupResolver(SignupSchema)
+    });
+
+    const [state, dispatch] = useReducer(reducer,Register_User);
+
+    const RegisterForm = async(value) =>{
+        //console.log(value);
+        const email = value?.email;
+        setLoader(true);
+        const data = await axios.post("/user/checkuserbyemail",{email});
+        if(data?.data?.message === "User already exists"){
+            setLoader(false);
+            setAlertContent("Email address already in use !");
             setAlert(true);
         }else{
-            setLoader(true);
-            const data = await axios.post("/user/checkuserbyemail",{email});
-            console.log(data);
-            if(data?.data?.message === "User already exists"){
-                setLoader(false);
-                setAlertContent("Email address already in use !");
-                setAlert(true);
-            }else{
-                setLoader(false);
-                setUploadImg(false);
-            }
-            //setUploadImg(false);
-            // const data = await axios.post("/user/register",{name,email,password});
-            // console.log(data?.data);
+            
+            dispatch({type:"USER_REGISTRATION",Name:"name",value:value.name});
+            dispatch({type:"USER_REGISTRATION",Name:"email",value:value.email});
+            dispatch({type:"USER_REGISTRATION",Name:"password",value:value.password});
+            setLoader(false);
+            setUploadImg(false);
         }
     }
 
@@ -62,7 +65,7 @@ const Register = () => {
     // });
 
     const RegisterUser = async() => {
-        // console.log(picture);
+        //console.log(picture);
         setLoader(true);
         const formdata = new FormData();
         formdata.append("file",imageinfo);
@@ -74,7 +77,7 @@ const Register = () => {
             body: formdata,
             }).then((res)=>res.json())
                 .then((data)=>{
-                    console.log(data);
+                    // console.log(data);
                     // console.log(data.url.toString());
                     //setPicture(data.url.toString());
                     const imageurl = data.url.toString()
@@ -82,16 +85,16 @@ const Register = () => {
                 })
                 .catch((err)=>{
                     setLoader(false);
-                    console.log(err);
-                });
-
-        
+                }); 
 
     }
 
     const ConfirmRegistration = async(picture) => {
+        const name = state.name;
+        const email = state.email;
+        const password = state.password;
         const data = await axios.post("/user/register",{name,email,password,picture});
-        console.log(data);
+        //console.log(data);
 
         if(!data){
             setLoader(false);
@@ -104,6 +107,9 @@ const Register = () => {
     }
 
     const RegisterUserWithoutImage = async() => {
+        const name = state.name;
+        const email = state.email;
+        const password = state.password;
         setLoader(true);
         const data = await axios.post("/user/register",{name,email,password});
         console.log(data);
@@ -143,6 +149,7 @@ const Register = () => {
 
     {uploadimg ?
     <Box
+    onSubmit={handleSubmit(RegisterForm)}
     bgcolor={"white"}
     component="form"
     maxWidth={320} 
@@ -163,23 +170,72 @@ const Register = () => {
     >
     <Typography variant="h2">Sign Up</Typography>
     {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
-    <TextField type={'text'} onChange={(e) => setName(e.target.value)} id="outlined-basic" label="Name" variant="outlined"/>
-    <TextField type={'email'} onChange={(e) => setEmail(e.target.value.toLowerCase())} id="outlined-basic" label="Email" variant="outlined"/>
-    <TextField type={"password"} onChange={(e) => setPassword(e.target.value)} id="outlined-basic" label="Password" variant="outlined"/>
-    <TextField type={"password"} onChange={(e) => setConfirmPassword(e.target.value)} id="outlined-basic" label="Confirm Password" variant="outlined"/>
-    
-    {/* <Button
-    variant="contained"
-    component="label"
-    >
-    Upload File
-    <input
-        type="file"
-        disabled
-    />
-    </Button> */}
 
-    <Button variant='contained' onClick={RegisterForm}>Continue</Button>
+    <Controller
+        name='name'
+        control={control}
+        rules={{required:true}}
+        render={({field})=>(
+            <TextField
+            {...field}
+            label="Name"
+            error={!!errors['name']}
+            helperText={errors['name'] ? errors['name'].message : ''}
+            type="text"
+            fullWidth
+            />
+          )}
+    />
+
+    <Controller
+        name='email'
+        control={control}
+        rules={{required:true}}
+        render={({field})=>(
+            <TextField
+            {...field}
+            label="Email"
+            error={!!errors['email']}
+            helperText={errors['email'] ? errors['email'].message : ''}
+            type="email"
+            fullWidth
+            />
+          )}
+    />
+
+    <Controller
+        name='password'
+        control={control}
+        rules={{required:true}}
+        render={({field})=>(
+            <TextField
+            {...field}
+            label="Password"
+            error={!!errors['password']}
+            helperText={errors['password'] ? errors['password'].message : ''}
+            type="password"
+            fullWidth
+            />
+          )}
+    />
+
+    <Controller
+        name='confirmpassword'
+        control={control}
+        rules={{required:true}}
+        render={({field})=>(
+            <TextField
+            {...field}
+            label="Confirm Password"
+            error={!!errors['confirmpassword']}
+            helperText={errors['confirmpassword'] ? errors['confirmpassword'].message : ''}
+            type="password"
+            fullWidth
+            />
+          )}
+    />
+
+    <Button variant='contained' type='submit'>Continue</Button>
 
     <Typography>
         <Link to="/">Already have an account!</Link>
@@ -228,24 +284,6 @@ const Register = () => {
 }
 
     
-
-    {/* <div className="login">Registration</div>
-    <div className="name">
-    <input type="text" onChange={(e) => setName(e.target.value)} placeholder='Enter Name'/>
-    </div>
-    <div className="email">
-    <input type="text" onChange={(e) => setEmail(e.target.value.toLowerCase())} placeholder='Enter Email'/>
-    </div>
-    <div className="password">
-    <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder='Enter Password'/>
-    </div>
-    <div className="confirm-password">
-    <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} placeholder='Enter Confirm Password'/>
-    </div>
-    <button onClick={RegisterUser}>Registration</button>
-    <div className="resigtration">
-    <a href='/'><button>Already have an account!</button></a>
-    </div> */}
     </div>
   )
 }
