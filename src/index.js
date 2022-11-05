@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import {BrowserRouter} from 'react-router-dom';
 import axios from 'axios';
+import ChatProvider from './context/ChatProvider';
 
 //axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.baseURL = "https://realchatapp-api.onrender.com";
@@ -14,9 +15,9 @@ axios.defaults.baseURL = "https://realchatapp-api.onrender.com";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-  <React.StrictMode>
+  <ChatProvider>
     <App />
-  </React.StrictMode>
+  </ChatProvider>
   </BrowserRouter>
 );
 

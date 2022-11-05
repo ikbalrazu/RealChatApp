@@ -1,24 +1,35 @@
-import React, { useEffect,useState,useRef } from 'react'
-import './Chatbox.css'
-import axios from 'axios';
+import React from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ChatState } from '../context/ChatProvider';
+import axios from "axios";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
 import { Box, Avatar, Typography,IconButton, MenuItem, Menu  } from '@mui/material';
 import { Stack } from '@mui/system';
-import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-//for dialog box
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { Link } from "react-router-dom";
+import {io} from 'socket.io-client';
 
 const ITEM_HEIGHT = 48;
 
-const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) => {
+const MobileChatBox = () =>{
+    const locatiion = useLocation();
+    const dashboard = useNavigate();
+
+    const socket = useRef();
+
+    const userInfo = JSON.parse(localStorage.getItem("userdetails"));
+    const currentUser = userInfo?.id;
+
+    const {
+        currentChat,
+        setSendMessage,
+        receivedMessage,
+        setReceivedMessage
+    } = ChatState();
+
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -32,13 +43,12 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
         setAnchorEl(null);
     };
 
-
     //fetching data for header
     useEffect(()=>{
         // console.log(chat);
         console.log(currentUser);
-        const userId = chat?.members?.find((id)=>id!==currentUser);
-        console.log(chat?._id);
+        const userId = currentChat?.members?.find((id)=>id!==currentUser);
+        //console.log(chat?._id);
         const getUserData = async () => {
         try{
             const {data} =await axios.get(`/user/${userId}`)
@@ -49,14 +59,14 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
         }
         };
 
-        if (chat !== null) getUserData();
-    },[chat]);
+        if (currentChat !== null) getUserData();
+    },[currentChat]);
 
     //fetch messages
     useEffect(() => {
         const fetchMessages = async () => {
           try {
-            const { data } = await axios.get(`/message/${chat?._id}`)
+            const { data } = await axios.get(`/message/${currentChat?._id}`)
             console.log(data);
             setMessages(data);
           } catch (error) {
@@ -64,8 +74,8 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
           }
         };
     
-        if (chat !== null) fetchMessages();
-    }, [chat]);
+        if (currentChat !== null) fetchMessages();
+    }, [currentChat]);
 
     //send message
     const handleSend = async() => {
@@ -73,9 +83,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
         const message = {
             senderId : currentUser,
             text: newMessage,
-            chatId: chat._id,
+            chatId: currentChat._id,
         }
-        const receiverId = chat.members.find((id)=>id!==currentUser);
+        const receiverId = currentChat.members.find((id)=>id!==currentUser);
         //send message to socket server
         setSendMessage({...message, receiverId})
         //send message to database
@@ -90,53 +100,54 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
         
     }
 
+    //get the message from socket server
+  // const [receivedMessage, setReceivedMessage] = useState(null);
+    useEffect(() => {
+        socket?.current?.on("recieve-message", (data) => {
+        console.log(data)
+        setReceivedMessage(data);
+        });
+    },[receivedMessage]);
+
     //Receive message from parent component
     useEffect(()=>{
         console.log("Message Arrived: ", receivedMessage);
-        if(receivedMessage !== null && receivedMessage.chatId === chat?._id){
+        if(receivedMessage !== null && receivedMessage.chatId === currentChat?._id){
             setMessages([...messages, receivedMessage]);
         }
     },[receivedMessage]);
 
     const scroll = useRef();
+
     useEffect(()=>{
         scroll.current?.scrollIntoView({ behavior: "smooth" });
     },[messages]);
 
-
     //Delete chat
     const DeleteChat = async() => {
         
-        const data = await axios.get(`chat/delete/${chat?._id}`);
+        const data = await axios.get(`chat/delete/${currentChat?._id}`);
         console.log(data);
         const {userdata} = await axios.get(`/chat/${currentUser}`)
         console.log(userdata);
-        handleChat(userdata);
+        // handleChat(userdata);
         setUserData(null);
         window.location.reload(false);
-
-
     }
 
-    //Dialog Box for user profile
-    // const [open, setOpen] = useState(false);
 
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
-
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
-    
-  return (
-    <>
-    <Box bgcolor="skyblue" p={1} sx={{display:{xs:"none",sm:"block"}}}>
+    return(
+        <>
+    <Box bgcolor="skyblue" p={1} sx={{display:{xs:"block",sm:"none"}}}>
     <div style={{height:"1000%"}}>
-        {chat ? (
             <>
             <Box>
                 <Stack direction='row' spacing={1} justifyContent="start">
+                <Link to='/chat'>
+                <IconButton>
+                <KeyboardBackspaceIcon/>
+                </IconButton>
+                </Link>
                 <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>
                 <Box >
                 <Typography sx={{marginTop:"10px"}}>
@@ -206,16 +217,10 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
             <div><button className='send-btn' onClick={handleSend}>Send</button></div>
             </div>
             </>
-        ) : (
-            <span className="chatbox-empty-message">
-            Tap on a chat to start conversation...
-          </span>
-        )}
         
     </div>
     </Box>
     </>
-  )
+    )
 }
-
-export default Chatbox
+export default MobileChatBox;

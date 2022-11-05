@@ -11,7 +11,7 @@ const Conversation = ({data,currentUserId,online}) => {
 
   useEffect(()=>{
     //console.log(data);
-    console.log(currentUserId);
+    //console.log(currentUserId);
     
     // for(let i=0;i<data?.length;i++){
     //   const userId = data[i]?.members?.find((id)=>id!==currentUserId);
@@ -43,7 +43,7 @@ const Conversation = ({data,currentUserId,online}) => {
   },[])
 
   return (
-    <Box sx={{marginLeft:"10px"}}>
+    <Box sx={{marginLeft:"10px"}} onClick={()=>console.log("conversion")}>
       <Stack direction="row" spacing={3}>
       {/* <StyledBadge
         overlap="circular"

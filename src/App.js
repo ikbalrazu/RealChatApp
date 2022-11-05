@@ -7,6 +7,8 @@ import {Route,Routes} from 'react-router-dom';
 import RegisterSucccess from './components/RegisterSuccess';
 import ResetPassword from './page/ResetPassword';
 import FormSubmit from './page/FormSubmit';
+import Chatbox from './components/ChatBox/Chatbox';
+import MobileChatBox from './page/MobileChatBox';
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
         <Route path="/register" element={<Register/>}/>
         <Route path="/registersuccess" element={<RegisterSucccess/>}/>
         <Route path="/chat" element={<Chat/>}/>
+        <Route path="/mobilechatbox" element={<MobileChatBox/>}/>
         <Route path="/forgotpassword" element={<ForgotPassword/>}/>
         <Route path="/resetpassword/:id/:token" element={<ResetPassword/>}/>
         <Route path="/formsubmit" element={<FormSubmit/>}/>

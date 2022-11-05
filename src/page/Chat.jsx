@@ -9,6 +9,7 @@ import {io} from 'socket.io-client';
 import {Box,AppBar,styled,Paper,Stack,Menu,MenuItem,ListItemIcon,Divider,IconButton,Typography,Tooltip, List, ListItem, ListItemButton } from '@mui/material';
 import {PersonAdd,Settings,Logout} from '@mui/icons-material';
 import NavBar from '../components/Navbar/NavBar';
+import { ChatState } from '../context/ChatProvider';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -21,10 +22,23 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Chat = () => {
   const loginpage = useNavigate();
+  const chatboxpage = useNavigate();
   const socket = useRef();
-  const [chats, setChats] = useState();
+  const {
+    chats,
+    setChats,
+    currentChat,
+    setCurrentChat,
+    onlineUsers,
+    setOnlineUsers,
+    sendMessage,
+    setSendMessage,
+    receivedMessage,
+    setReceivedMessage
+  } = ChatState();
+  // const [chats, setChats] = useState();
   const [chatMemberId,setChatMemberId] = useState([]);
-  const [currentChat,setCurrentChat] = useState(null);
+  // const [currentChat,setCurrentChat] = useState(null);
   const userInfo = JSON.parse(localStorage.getItem("userdetails"));
   
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -36,10 +50,6 @@ const Chat = () => {
     setAnchorEl(null);
   };
 
-  const LogoutHandler = () =>{
-    localStorage.removeItem("userdetails");
-    loginpage("/")
-  }
 
   useEffect(()=>{
     const getChats = async()=>{
@@ -58,7 +68,7 @@ const Chat = () => {
   },[]);
 
   //socket io section
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  // const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(()=>{
     socket.current = io("http://localhost:5000");
@@ -80,7 +90,7 @@ const Chat = () => {
   },[]);
 
   //send message to socket server
-  const [sendMessage, setSendMessage] = useState(null);
+  // const [sendMessage, setSendMessage] = useState(null);
   useEffect(()=>{
     if(sendMessage!==null){
       socket.current.emit("send-message", sendMessage);
@@ -88,7 +98,7 @@ const Chat = () => {
   },[sendMessage]);
 
   //get the message from socket server
-  const [receivedMessage, setReceivedMessage] = useState(null);
+  // const [receivedMessage, setReceivedMessage] = useState(null);
   useEffect(() => {
     socket.current.on("recieve-message", (data) => {
       console.log(data)
@@ -126,10 +136,26 @@ const Chat = () => {
       <Stack direction="column" justifyContent="center" p={1}>
       
       <SearchAndAdd currentUser={userInfo?.id} handleChat={(value)=>setChats(value)}  members={myChatMembers(chats)}/>
-      <Box bgcolor="#F5F5F5" sx={{height:'75vh'}}>
+      <Box bgcolor="#F5F5F5" sx={{height:'75vh',display:{xs:"none",sm:"block"}}}>
         <List>
         {chats?.map((chat)=>(
           <ListItem>
+          <ListItemButton onClick={()=>setCurrentChat(chat)}>
+          <Conversation 
+          data={chat} 
+          currentUserId={userInfo?.id} 
+          online={checkOnlineStatus(chat)}
+          />
+          </ListItemButton>
+          </ListItem>
+        ))}
+        </List>
+      </Box>
+
+      <Box bgcolor="#F5F5F5" sx={{height:'75vh',display:{xs:"block",sm:"none"}}}>
+        <List>
+        {chats?.map((chat)=>(
+          <ListItem onClick={()=>chatboxpage('/mobilechatbox')}>
           <ListItemButton onClick={()=>setCurrentChat(chat)}>
           <Conversation 
           data={chat} 
