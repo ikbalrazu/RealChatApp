@@ -9,6 +9,7 @@ const ChatProvider = ({children})=>{
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [sendMessage, setSendMessage] = useState(null);
     const [receivedMessage, setReceivedMessage] = useState(null);
+    const [messages, setMessages] = useState([]);
     
     return(
         <ChatContext.Provider value={{
@@ -21,7 +22,9 @@ const ChatProvider = ({children})=>{
             sendMessage,
             setSendMessage,
             receivedMessage,
-            setReceivedMessage
+            setReceivedMessage,
+            messages,
+            setMessages
         }}>
             {children}
         </ChatContext.Provider>

@@ -17,7 +17,6 @@ const ITEM_HEIGHT = 48;
 const MobileChatBox = () =>{
     const locatiion = useLocation();
     const dashboard = useNavigate();
-
     const socket = useRef();
 
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
@@ -27,11 +26,14 @@ const MobileChatBox = () =>{
         currentChat,
         setSendMessage,
         receivedMessage,
-        setReceivedMessage
+        setReceivedMessage,
+        messages,
+        setMessages,
+        sendMessage
     } = ChatState();
 
     const [userData, setUserData] = useState(null);
-    const [messages, setMessages] = useState([]);
+    // const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,6 +44,21 @@ const MobileChatBox = () =>{
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    //send message to socket server
+    // const [sendMessage, setSendMessage] = useState(null);
+    useEffect(()=>{
+        if(sendMessage!==null){
+        socket?.current?.emit("send-message", sendMessage);
+        }
+    },[sendMessage]);
+
+    useEffect(() => {
+        socket?.current?.on("recieve-message", (data) => {
+          console.log(data)
+          setReceivedMessage(data);
+        });
+    },[]);
 
     //fetching data for header
     useEffect(()=>{
@@ -77,6 +94,10 @@ const MobileChatBox = () =>{
         if (currentChat !== null) fetchMessages();
     }, [currentChat]);
 
+    useEffect(()=>{
+        console.log(receivedMessage);
+    });
+
     //send message
     const handleSend = async() => {
         console.log(newMessage);
@@ -102,12 +123,12 @@ const MobileChatBox = () =>{
 
     //get the message from socket server
   // const [receivedMessage, setReceivedMessage] = useState(null);
-    useEffect(() => {
-        socket?.current?.on("recieve-message", (data) => {
-        console.log(data)
-        setReceivedMessage(data);
-        });
-    },[receivedMessage]);
+    // useEffect(() => {
+    //     socket?.current?.on("recieve-message", (data) => {
+    //     console.log(data)
+    //     setReceivedMessage(data);
+    //     });
+    // },[receivedMessage]);
 
     //Receive message from parent component
     useEffect(()=>{

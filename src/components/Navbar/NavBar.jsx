@@ -1,4 +1,4 @@
-import { AppBar, Box, Fab, Toolbar,Typography,Button,IconButton,Avatar} from '@mui/material'
+import { AppBar, Box, Fab, Toolbar,Typography,Button,IconButton,Avatar,CardMedia} from '@mui/material'
 import React from 'react'
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -11,6 +11,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Card from '@mui/material/Card';
+import { CardActionArea } from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
@@ -55,6 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function NavBar() {
   const loginpage = useNavigate();
+  const userInfo = JSON.parse(localStorage.getItem("userdetails"));
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -62,6 +70,19 @@ export default function NavBar() {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  //profile dialog start
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //profile dialog end
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -102,7 +123,7 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleClickOpen}>Profile</MenuItem>
       <MenuItem onClick={LogoutHandler}>Logout</MenuItem>
     </Menu>
   );
@@ -186,9 +207,9 @@ export default function NavBar() {
             component="div"
             // sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            P-CHAT
           </Typography>
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -196,10 +217,10 @@ export default function NavBar() {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search> */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
@@ -212,7 +233,7 @@ export default function NavBar() {
               <Badge badgeContent={17} color="error">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size="large"
               edge="end"
@@ -222,7 +243,8 @@ export default function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              {/* <AccountCircle /> */}
+              <Avatar alt="Remy Sharp" src={userInfo?.picture} style={{ width: "35px", height: "35px" }}/>
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -252,6 +274,30 @@ export default function NavBar() {
     </AppBar>
     {renderMobileMenu}
     {renderMenu}
+
+    {/* profile dialog box start */}
+    <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{userInfo?.name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          {userInfo?.email}
+          </DialogContentText>
+          <Card sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={userInfo?.picture}
+              alt="green iguana"
+            />
+          </CardActionArea>
+        </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      {/* profile dialog box end */}
     </Box>
   )
 }
