@@ -71,7 +71,8 @@ const Chat = () => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(()=>{
-    socket.current = io("http://localhost:5000");
+    // socket.current = io("http://localhost:5000");
+    socket.current = io("https://realchatapp-api.onrender.com");
     socket.current.emit("new-user-add", userInfo?.id);
     socket.current.on("get-users",(users)=>{
       setOnlineUsers(users);
