@@ -54,7 +54,8 @@ const server = app.listen(PORT,function(error){
 //implement socket io
 const io=require('socket.io')(server,{
     cors:{
-        origin: "http://localhost:3000",
+        // origin: "http://localhost:3000",
+        origin: "https://realchatappbyiqbal.netlify.app",
     },
 });
 
