@@ -54,7 +54,7 @@ const server = app.listen(PORT,function(error){
 //implement socket io
 const io=require('socket.io')(server,{
     cors:{
-        origin: "*",
+        origin: "http://localhost:3000",
     },
 });
 
