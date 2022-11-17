@@ -6,8 +6,7 @@ import SearchAndAdd from '../components/SearchAndAdd/SearchAndAdd';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import {io} from 'socket.io-client';
-import {Box,AppBar,styled,Paper,Stack,Menu,MenuItem,ListItemIcon,Divider,IconButton,Typography,Tooltip, List, ListItem, ListItemButton } from '@mui/material';
-import {PersonAdd,Settings,Logout} from '@mui/icons-material';
+import {Box,styled,Paper,Stack,List, ListItem, ListItemButton } from '@mui/material';
 import NavBar from '../components/Navbar/NavBar';
 import { ChatState } from '../context/ChatProvider';
 
@@ -71,7 +70,7 @@ const Chat = () => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(()=>{
-    // socket.current = io("http://localhost:5000");
+    //socket.current = io("http://localhost:5000");
     socket.current = io("https://realchatapp-api.onrender.com");
     socket.current.emit("new-user-add", userInfo?.id);
     socket.current.on("get-users",(users)=>{
@@ -109,7 +108,7 @@ const Chat = () => {
 
   //online status online/offline
   const checkOnlineStatus = (chat) => {
-    const chatMember = chat.members.find((member) => member !== userInfo?.id);
+    const chatMember = chat?.members?.find((member) => member !== userInfo?.id);
     const online = onlineUsers.find((user) => user.userId === chatMember);
     return online ? true : false;
   };
@@ -179,40 +178,13 @@ const Chat = () => {
       setSendMessage={setSendMessage}
       receivedMessage={receivedMessage} 
       handleChat={(value)=>setChats(value)}
+      online={checkOnlineStatus(currentChat)}
       />
       </Box>
 
       </Stack>
       </Box>
       </>
-    
-    // old design
-    // <div className='container'>
-    //   <div><button onClick={LogoutHandler}>Logout</button></div>
-    //   <div className="conversion">
-    //   <SearchAndAdd currentUser={userInfo?.id} handleChat={(value)=>setChats(value)}  members={myChatMembers(chats)}/>
-    //   <p>Chat List</p>
-    //   {chats?.map((chat)=>(
-    //     <div onClick={()=>setCurrentChat(chat)}>
-    //       <Conversation 
-    //       data={chat} 
-    //       currentUserId={userInfo?.id}
-    //       online={checkOnlineStatus(chat)}
-    //       />
-    //     </div>
-    //   ))}
-      
-    //   </div>
-    //   <div className="chatbox">
-    //   <Chatbox 
-    //   chat={currentChat} 
-    //   currentUser={userInfo?.id}
-    //   setSendMessage={setSendMessage}
-    //   receivedMessage={receivedMessage} 
-    //   handleChat={(value)=>setChats(value)}
-    //   />
-    //   </div>
-    // </div>
   )
 }
 

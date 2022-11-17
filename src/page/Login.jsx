@@ -16,27 +16,6 @@ import './Login.css';
 const Login = () => {
     const chatpage = useNavigate();
 
-    // const reducer = (state, action)=>{
-    //   if(action.type === "SET_ALERT"){
-    //     return{
-    //       ...state,
-    //       alert:action.payload,
-    //     }
-    //   }else if(action.type === "SET_ALERT_CONTENT"){
-    //     return{
-    //       ...state,
-    //       alertContent:action.payload,
-
-    //     }
-    //   }else if(action.type === "SET_LOADER"){
-    //     return{
-    //       ...state,
-    //       loader:action.payload,
-    //     }
-    //   }
-
-    // }
-
     const [state, dispatch] = useReducer(reducer,Initial_State);
 
 

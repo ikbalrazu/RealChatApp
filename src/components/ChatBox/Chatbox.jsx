@@ -18,7 +18,7 @@ import Slide from '@mui/material/Slide';
 
 const ITEM_HEIGHT = 48;
 
-const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) => {
+const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,online}) => {
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -35,7 +35,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
 
     //fetching data for header
     useEffect(()=>{
-        // console.log(chat);
+        //console.log(chat);
         console.log(currentUser);
         const userId = chat?.members?.find((id)=>id!==currentUser);
         console.log(chat?._id);
@@ -139,9 +139,10 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat}) =
                 <Stack direction='row' spacing={1} justifyContent="start">
                 <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>
                 <Box >
-                <Typography sx={{marginTop:"10px"}}>
+                <Typography sx={{marginTop:"6px"}}>
                     {userData?.name}
                 </Typography>
+                <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>{online ? "online" : "offline"}</Typography>
                 </Box>
 
                 <Box sx={{flexGrow:0}}>
