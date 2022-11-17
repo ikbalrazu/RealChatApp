@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const http = require('http');
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -8,10 +9,12 @@ const cors = require('cors');
 const UserRoute = require('./Routes/userRoute');
 const ChatRoute = require('./Routes/chatRoute');
 const MessageRoute = require('./Routes/messageRoute'); 
-const { Socket } = require("socket.io");
+// const { Socket } = require("socket.io");
 
 dotenv.config();
 const app = express();
+
+const server = http.createServer(app);
 app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({limit:"30mb", extended:true}));
 
@@ -42,7 +45,7 @@ app.use('/user', UserRoute);
 app.use('/chat', ChatRoute);
 app.use('/message', MessageRoute);
 
-const server = app.listen(PORT,function(error){
+server.listen(PORT,function(error){
     if(error){
         console.log("server failed");
     }else{
@@ -54,7 +57,7 @@ const server = app.listen(PORT,function(error){
 //implement socket io
 const io=require('socket.io')(server,{
     cors:{
-        origin: "http://localhost:3000",
+        origin: "*",
     },
 });
 
