@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const querystring = require('querystring');
 const cloudinary = require('../Confiq/cloudinary');
 const transporter = require('../Confiq/nodemailer');
+const generateToken = require("../Confiq/generateToken.js");
 
 
 const registerUser = async(req,res) => {
@@ -80,6 +81,7 @@ const loginUser = async(req,res) => {
                 name:user.name,
                 email:user.email,
                 picture:user.picture,
+                token:generateToken(email,user.name),
             })
         }
         

@@ -61,12 +61,15 @@ const io=require('socket.io')(server,{
     },
 });
 
+// const io=require('socket.io')(server,{
+//     cors:{
+//         origin: "http://localhost:3000",
+//     },
+// });
+
 let activeUsers = [];
 
 io.on('connection',(socket)=>{
-    // console.log("a user connected",socket.id);
-    // const response = new Date();
-    // socket.send(response);
 
     //add new user
     socket.on("new-user-add", (newUserId)=>{
@@ -98,16 +101,4 @@ io.on('connection',(socket)=>{
             io.to(user.socketId).emit("recieve-message", data);
         }
     });
-    
-
-    //custom event server to client data
-    //socket.emit("myevent", "hello iqbal");
-
-    // socket.on("myevent", function(data){
-    //     console.log(data);
-    // });
-
-    // socket.on("disconnect",()=>{
-    //     console.log("User disconnected", socket.id)
-    // })
 })
