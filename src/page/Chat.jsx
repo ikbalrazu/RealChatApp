@@ -33,7 +33,8 @@ const Chat = () => {
     sendMessage,
     setSendMessage,
     receivedMessage,
-    setReceivedMessage
+    setReceivedMessage,
+    SocketConnect,
   } = ChatState();
   // const [chats, setChats] = useState();
   const [chatMemberId,setChatMemberId] = useState([]);
@@ -48,6 +49,9 @@ const Chat = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  
+ 
 
 
   useEffect(()=>{
@@ -70,41 +74,38 @@ const Chat = () => {
   // const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(()=>{
-    //socket.current = io("http://localhost:5000");
-    socket.current = io("https://realchatapp-api.onrender.com");
+    socket.current = SocketConnect;
+    //socket.current = io("https://realchatapp-api.onrender.com");
     socket.current.emit("new-user-add", userInfo?.id);
     socket.current.on("get-users",(users)=>{
       setOnlineUsers(users);
     })
-    // socket.on("message", function(data){
-    //   console.log(data);
-    //   document.getElementById("msg").innerHTML=data;
-    // });
-
-    // socket.on("myevent",function(data){
-    //   console.log(data);
-    // })
-
-    // socket.emit("myevent","hi iqbal");
 
   },[]);
 
   //send message to socket server
   // const [sendMessage, setSendMessage] = useState(null);
-  useEffect(()=>{
-    if(sendMessage!==null){
-      socket.current.emit("send-message", sendMessage);
-    }
-  },[sendMessage]);
+  // useEffect(()=>{
+  //   if(sendMessage!==null){
+  //     socket.current.emit("send-message", sendMessage);
+  //   }
+  // },[sendMessage]);
 
   //get the message from socket server
   // const [receivedMessage, setReceivedMessage] = useState(null);
-  useEffect(() => {
-    socket.current.on("recieve-message", (data) => {
-      console.log(data)
-      setReceivedMessage(data);
-    });
-  },[]);
+  // useEffect(() => {
+  //   socket.current.on("recieve-message", (data) => {
+  //     console.log(data)
+  //     setReceivedMessage(data);
+  //   });
+  // },[]);
+
+  useEffect(()=>{
+    console.log(userInfo?.token);
+    if(!userInfo || !userInfo.token){
+      loginpage('/');
+    }
+  },[])
 
   //online status online/offline
   const checkOnlineStatus = (chat) => {
@@ -152,6 +153,7 @@ const Chat = () => {
         </List>
       </Box>
 
+      {/* mobile chat */}
       <Box bgcolor="#F5F5F5" sx={{height:'75vh',display:{xs:"block",sm:"none"}}}>
         <List>
         {chats?.map((chat)=>(

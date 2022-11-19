@@ -1,5 +1,5 @@
-import {createContext,useState,useEffect, useContext} from 'react'
-import { useNavigate } from 'react-router-dom';
+import {createContext,useState,useEffect, useContext,useRef} from 'react'
+import {io} from 'socket.io-client';
 
 const ChatContext = createContext();
 
@@ -10,6 +10,24 @@ const ChatProvider = ({children})=>{
     const [sendMessage, setSendMessage] = useState(null);
     const [receivedMessage, setReceivedMessage] = useState(null);
     const [messages, setMessages] = useState([]);
+
+    //const socket = useRef();
+    const SocketConnect = io("http://localhost:5000");
+
+    const userInfo = JSON.parse(localStorage.getItem("userdetails"));
+
+    useEffect(() => {
+        SocketConnect.on("recieve-message", (data) => {
+          console.log(data)
+          setReceivedMessage(data);
+        });
+    },[]);
+
+    useEffect(()=>{
+        if(sendMessage!==null){
+            SocketConnect.emit("send-message", sendMessage);
+        }
+    },[sendMessage]);
     
     return(
         <ChatContext.Provider value={{
@@ -24,7 +42,8 @@ const ChatProvider = ({children})=>{
             receivedMessage,
             setReceivedMessage,
             messages,
-            setMessages
+            setMessages,
+            SocketConnect
         }}>
             {children}
         </ChatContext.Provider>

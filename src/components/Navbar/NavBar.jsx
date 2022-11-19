@@ -1,15 +1,10 @@
 import { AppBar, Box, Fab, Toolbar,Typography,Button,IconButton,Avatar,CardMedia} from '@mui/material'
-import React from 'react'
+import React , {useState} from 'react'
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -62,11 +57,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function NavBar() {
   const loginpage = useNavigate();
+  const chatpage = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userdetails"));
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -145,37 +141,13 @@ export default function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+
       <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
         <p>Profile</p>
+      </MenuItem>
+
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <p>Logout</p>
       </MenuItem>
     </Menu>
   );
@@ -206,6 +178,7 @@ export default function NavBar() {
             noWrap
             component="div"
             // sx={{ display: { xs: 'none', sm: 'block' } }}
+            onClick={()=>window.location.reload()}
           >
             P-CHAT
           </Typography>
@@ -220,20 +193,6 @@ export default function NavBar() {
           </Search> */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            {/* <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
             <IconButton
               size="large"
               edge="end"
@@ -259,16 +218,6 @@ export default function NavBar() {
               <MoreIcon />
             </IconButton>
           </Box>
-          {/* <Button onClick={LogoutHandler} variant='contained'>Logout</Button>
-
-          <IconButton onClick={handleOpenUserMenu}  >
-            <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
-          </IconButton> */}
-
-          {/* <Fab variant="extended" color="primary" aria-label="add">
-          <Avatar alt="Remy Sharp" src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
-          Extended
-          </Fab> */}
 
         </Toolbar>
     </AppBar>

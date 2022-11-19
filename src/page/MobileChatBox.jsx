@@ -10,14 +10,13 @@ import { Stack } from '@mui/system';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Link } from "react-router-dom";
-import {io} from 'socket.io-client';
 
 const ITEM_HEIGHT = 48;
 
 const MobileChatBox = () =>{
     const locatiion = useLocation();
     const dashboard = useNavigate();
-    const socket = useRef();
+    //const socket = useRef();
 
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
     const currentUser = userInfo?.id;
@@ -29,7 +28,7 @@ const MobileChatBox = () =>{
         setReceivedMessage,
         messages,
         setMessages,
-        sendMessage
+        sendMessage,
     } = ChatState();
 
     const [userData, setUserData] = useState(null);
@@ -44,21 +43,6 @@ const MobileChatBox = () =>{
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    //send message to socket server
-    // const [sendMessage, setSendMessage] = useState(null);
-    useEffect(()=>{
-        if(sendMessage!==null){
-        socket?.current?.emit("send-message", sendMessage);
-        }
-    },[sendMessage]);
-
-    useEffect(() => {
-        socket?.current?.on("recieve-message", (data) => {
-          console.log(data)
-          setReceivedMessage(data);
-        });
-    },[]);
 
     //fetching data for header
     useEffect(()=>{
@@ -96,7 +80,8 @@ const MobileChatBox = () =>{
 
     useEffect(()=>{
         console.log(receivedMessage);
-    });
+        console.log(newMessage);
+    },[receivedMessage]);
 
     //send message
     const handleSend = async() => {

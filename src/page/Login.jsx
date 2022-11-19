@@ -55,6 +55,7 @@ const Login = () => {
               name:data?.data?.name,
               email:data?.data?.email,
               picture:data?.data?.picture,
+              token:data?.data?.token,
             })
           );
           dispatch({type:"SET_LOADER",payload:false});
@@ -109,7 +110,7 @@ const Login = () => {
           render={({field})=>(
               <TextField
               {...field}
-              label="email"
+              label="Email"
               error={!!errors['email']}
               helperText={errors['email'] ? errors['email'].message : ''}
               type="email"
