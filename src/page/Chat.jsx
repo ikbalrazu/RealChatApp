@@ -137,7 +137,7 @@ const Chat = () => {
       <Stack direction="column" justifyContent="center" p={1}>
       
       <SearchAndAdd currentUser={userInfo?.id} handleChat={(value)=>setChats(value)}  members={myChatMembers(chats)}/>
-      <Box bgcolor="#F5F5F5" sx={{height:'75vh',display:{xs:"none",sm:"block"}}}>
+      <Box bgcolor="#F5F5F5" sx={{height:'75vh',overflow:"scroll",overflowX:"hidden",display:{xs:"none",sm:"block"}}}>
         <List>
         {chats?.map((chat)=>(
           <ListItem>
@@ -154,7 +154,7 @@ const Chat = () => {
       </Box>
 
       {/* mobile chat */}
-      <Box bgcolor="#F5F5F5" sx={{height:'75vh',display:{xs:"block",sm:"none"}}}>
+      <Box bgcolor="#F5F5F5" sx={{height:'75vh',overflow:"scroll",OverflowX:"hidden",display:{xs:"block",sm:"none"}}}>
         <List>
         {chats?.map((chat)=>(
           <ListItem onClick={()=>chatboxpage('/mobilechatbox')}>

@@ -5,11 +5,19 @@ import { ChatState } from '../context/ChatProvider';
 import axios from "axios";
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
-import { Box, Avatar, Typography,IconButton, MenuItem, Menu  } from '@mui/material';
+import { Box, Avatar, Typography,IconButton, MenuItem, Menu, Button, CardMedia  } from '@mui/material';
 import { Stack } from '@mui/system';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Link } from "react-router-dom";
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Card from '@mui/material/Card';
+import { CardActionArea } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 
@@ -106,15 +114,6 @@ const MobileChatBox = () =>{
         
     }
 
-    //get the message from socket server
-  // const [receivedMessage, setReceivedMessage] = useState(null);
-    // useEffect(() => {
-    //     socket?.current?.on("recieve-message", (data) => {
-    //     console.log(data)
-    //     setReceivedMessage(data);
-    //     });
-    // },[receivedMessage]);
-
     //Receive message from parent component
     useEffect(()=>{
         console.log("Message Arrived: ", receivedMessage);
@@ -140,6 +139,18 @@ const MobileChatBox = () =>{
         setUserData(null);
         window.location.reload(false);
     }
+
+    //profile dialog start
+    const [userprofile, setUserProfile] = useState(false);
+
+    const handleClickOpen = () => {
+        setUserProfile(true);
+    };
+
+    const handleClickClose = () => {
+        setUserProfile(false);
+    };
+    //profile dialog end
 
 
     return(
@@ -184,7 +195,7 @@ const MobileChatBox = () =>{
                 },
                 }}
                 >
-                <MenuItem>
+                <MenuItem onClick={handleClickOpen}>
                 Profile
                 </MenuItem>
                 <MenuItem onClick={DeleteChat}>
@@ -225,6 +236,30 @@ const MobileChatBox = () =>{
             </>
         
     </div>
+
+    {/* profile dialog box start */}
+    <Dialog open={userprofile} onClose={handleClickClose}>
+        <DialogTitle>{userData?.name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          {userData?.email}
+          </DialogContentText>
+          <Card sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={userData?.picture}
+              alt="green iguana"
+            />
+          </CardActionArea>
+        </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClickClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      {/* profile dialog box end */}
     </Box>
     </>
     )

@@ -3,7 +3,7 @@ import './Chatbox.css'
 import axios from 'axios';
 import { format } from "timeago.js";
 import InputEmoji from "react-input-emoji";
-import { Box, Avatar, Typography,IconButton, MenuItem, Menu  } from '@mui/material';
+import { Box, Avatar, Typography,IconButton, MenuItem, Menu, Button, CardMedia  } from '@mui/material';
 import { Stack } from '@mui/system';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -14,7 +14,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
+import Card from '@mui/material/Card';
+import { CardActionArea } from '@mui/material';
 
 const ITEM_HEIGHT = 48;
 
@@ -42,7 +43,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         const getUserData = async () => {
         try{
             const {data} =await axios.get(`/user/${userId}`)
-            console.log(data);
+            //console.log(data);
             setUserData(data);
         }catch (error) {
             console.log(error);
@@ -57,7 +58,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         const fetchMessages = async () => {
           try {
             const { data } = await axios.get(`/message/${chat?._id}`)
-            console.log(data);
+            //console.log(data);
             setMessages(data);
           } catch (error) {
             console.log(error);
@@ -119,15 +120,15 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     }
 
     //Dialog Box for user profile
-    // const [open, setOpen] = useState(false);
+    const [userprofile, setUserProfile] = useState(false);
 
-    // const handleClickOpen = () => {
-    //     setOpen(true);
-    // };
+    const handleClickOpen = () => {
+        setUserProfile(true);
+    };
 
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const handleClickClose = () => {
+        setUserProfile(false);
+    };
     
   return (
     <>
@@ -168,7 +169,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
                 },
                 }}
                 >
-                <MenuItem>
+                <MenuItem onClick={handleClickOpen}>
                 Profile
                 </MenuItem>
                 <MenuItem onClick={DeleteChat}>
@@ -214,6 +215,30 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         )}
         
     </div>
+
+    {/* profile dialog box start */}
+    <Dialog open={userprofile} onClose={handleClickClose}>
+        <DialogTitle>{userData?.name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          {userData?.email}
+          </DialogContentText>
+          <Card sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={userData?.picture}
+              alt="green iguana"
+            />
+          </CardActionArea>
+        </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClickClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      {/* profile dialog box end */}
     </Box>
     </>
   )

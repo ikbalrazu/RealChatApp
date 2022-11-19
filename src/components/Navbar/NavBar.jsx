@@ -1,5 +1,5 @@
 import { AppBar, Box, Fab, Toolbar,Typography,Button,IconButton,Avatar,CardMedia} from '@mui/material'
-import React , {useState} from 'react'
+import React, {useState} from 'react'
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
@@ -59,7 +59,7 @@ export default function NavBar() {
   const loginpage = useNavigate();
   const chatpage = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userdetails"));
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -68,7 +68,7 @@ export default function NavBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   //profile dialog start
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -77,7 +77,6 @@ export default function NavBar() {
   const handleClose = () => {
     setOpen(false);
   };
-
   //profile dialog end
 
   const handleProfileMenuOpen = (event) => {
@@ -141,17 +140,14 @@ export default function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <p>Profile</p>
+      <MenuItem onClick={handleClickOpen}>
+        Profile
       </MenuItem>
-
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <p>Logout</p>
+      <MenuItem onClick={LogoutHandler}>
+        Logout
       </MenuItem>
     </Menu>
   );
-
 
   //old code
 
