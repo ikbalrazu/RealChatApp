@@ -37,12 +37,13 @@ const registerUser = async(req,res) => {
                 transporter.sendMail(mailOptions, function (error, info) {
                     if (error) {
                       //console.log(error);
-                      res.json(error.message);
-                      //console.log(email);
+                      console.log("Invalid email");
+                      //res.json("Invalid email");
+                      
                     } else {
                 
-                      res.json({ message: "send email successfully" });
-                      //console.log('Email sent: ' + info.response);
+                      //res.json({ message: "send email successfully" });
+                      console.log("send email successfully");
                 
                     }
                 });

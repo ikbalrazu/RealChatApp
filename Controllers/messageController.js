@@ -25,4 +25,12 @@ const getMessages = async (req, res) => {
   }
 };
 
-module.exports = {addMessage,getMessages}
+const DeleteChatMessage = async (req,res) => {
+  const {chatId,senderId} = req.body;
+  const result = await MessageModel.find({chatId,senderId});
+  //res.json({result});
+  const messageDelete = await MessageModel.remove({ $expr: { $eq: [ chatId, senderId ] } });
+  res.json({messageDelete});
+}
+
+module.exports = {addMessage,getMessages,DeleteChatMessage}
