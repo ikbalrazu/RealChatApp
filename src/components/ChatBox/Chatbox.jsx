@@ -58,7 +58,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         const fetchMessages = async () => {
           try {
             const { data } = await axios.get(`/message/${chat?._id}`)
-            //console.log(data);
+            console.log(chat?._id);
             setMessages(data);
           } catch (error) {
             console.log(error);
@@ -82,6 +82,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         //send message to database
         try{
             const {data} = await axios.post("/message",message);
+            console.log(data);
             setMessages([...messages,data]);
             setNewMessage("");
 
