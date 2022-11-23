@@ -17,12 +17,19 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Card from '@mui/material/Card';
 import { CardActionArea } from '@mui/material';
 
+//message sound
+import useSound from 'use-sound';
+import sendmsgsound from '../../sound/sendmsg.mp3'
+
 const ITEM_HEIGHT = 48;
 
 const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,online}) => {
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+
+    //message sound
+    const [sendmsgPlay] = useSound(sendmsgsound);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -76,6 +83,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
             text: newMessage,
             chatId: chat._id,
         }
+        sendmsgPlay();
         const receiverId = chat.members.find((id)=>id!==currentUser);
         //send message to socket server
         setSendMessage({...message, receiverId})
