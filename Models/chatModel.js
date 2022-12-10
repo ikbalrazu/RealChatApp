@@ -5,6 +5,10 @@ const ChatSchema = new mongoose.Schema(
     members: {
       type: Array,
     },
+    unseenmsg:{
+      type: Boolean,
+      default:false,
+    },
   },
   {
     timestamps: true,

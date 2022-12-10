@@ -55,17 +55,17 @@ server.listen(PORT,function(error){
 })
 
 //implement socket io
-const io=require('socket.io')(server,{
-    cors:{
-        origin: "*",
-    },
-});
-
 // const io=require('socket.io')(server,{
 //     cors:{
-//         origin: "http://localhost:3000",
+//         origin: "*",
 //     },
 // });
+
+const io=require('socket.io')(server,{
+    cors:{
+        origin: "http://localhost:3000",
+    },
+});
 
 let activeUsers = [];
 
@@ -101,4 +101,8 @@ io.on('connection',(socket)=>{
             io.to(user.socketId).emit("recieve-message", data);
         }
     });
+
+    socket.on("typingMessage",(data)=>{
+        console.log(data);
+    })
 })
