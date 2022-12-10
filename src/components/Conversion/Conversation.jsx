@@ -8,13 +8,19 @@ const Conversation = ({data,currentUserId,online}) => {
   const [userData,setUserData] = useState([]);
   //let userData = [];
 
+  const [unseenmsg,setUnseenMsg] = useState();
+
   const {receivedMessage} = ChatState();
   
-  console.log(receivedMessage?.text);
+  // console.log(receivedMessage?.text);
+  // console.log(receivedMessage?.receiverId);
 
   useEffect(()=>{
     const userId = data?.members?.find((id)=>id!==currentUserId);
-    console.log(userId);
+    //console.log(userId);
+    if(receivedMessage?.receiverId === userId){
+      setUnseenMsg(receivedMessage?.text)
+    }
     const getUserData = async ()=> {
       try
       {
@@ -58,7 +64,7 @@ const Conversation = ({data,currentUserId,online}) => {
 
       <Stack>
       <Typography style={{fontSize:"20px"}}>{userData?.name}</Typography>
-      {/* <Typography sx={{fontSize:"12px"}}></Typography> */}
+      <Typography sx={{fontSize:"12px"}}>{unseenmsg}</Typography>
       </Stack>
       
       </Stack>

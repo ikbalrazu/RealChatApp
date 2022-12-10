@@ -12,8 +12,8 @@ const ChatProvider = ({children})=>{
     const [messages, setMessages] = useState([]);
 
     //const socket = useRef();
-    //const SocketConnect = io("http://localhost:5000");
-    const SocketConnect = io("https://realchatapp-api.onrender.com");
+    const SocketConnect = io("http://localhost:5000");
+    //const SocketConnect = io("https://realchatapp-api.onrender.com");
 
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
 

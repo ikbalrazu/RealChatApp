@@ -21,6 +21,9 @@ import { CardActionArea } from '@mui/material';
 import useSound from 'use-sound';
 import sendmsgsound from '../../sound/sendmsg.mp3'
 
+import toast,{Toaster} from 'react-hot-toast';
+import { Socket } from 'socket.io-client';
+
 const ITEM_HEIGHT = 48;
 
 const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,online}) => {
@@ -100,6 +103,15 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         
     }
 
+    // const InputHandler = (e) =>{
+    //     setNewMessage(e.target.value);
+    //     Socket.current.emit("typingMessage",{
+    //         senderId: myInfo.id,
+    //         receiverId: currentUser.id,
+    //         msg: e.target.value
+    //     })
+    // }
+
     //Receive message from parent component
     useEffect(()=>{
         console.log("Message Arrived: ", receivedMessage);
@@ -142,6 +154,15 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
   return (
     <>
     <Box bgcolor="skyblue" p={1} sx={{display:{xs:"none",sm:"block"}}}>
+        {/* <Toaster 
+        position={'top-right'} 
+        reverseOrder={false}
+        toastOptions = {{
+            style : {
+                fontSize: '18px'
+            }
+        }}
+        /> */}
     <div style={{height:"1000%"}}>
         {chat ? (
             <>
@@ -198,7 +219,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
             }}
             />
             <div className="chat-body" style={{height:"60vh"}}>
-            {messages.map((message)=>(
+            {messages.map((message,index)=>(
                 <>
                 <div ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
                     <span>{message.text} </span>

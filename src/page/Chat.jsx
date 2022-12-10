@@ -10,6 +10,8 @@ import {Box,styled,Paper,Stack,List, ListItem, ListItemButton } from '@mui/mater
 import NavBar from '../components/Navbar/NavBar';
 import { ChatState } from '../context/ChatProvider';
 
+import toast,{Toaster} from 'react-hot-toast';
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -107,6 +109,14 @@ const Chat = () => {
     }
   },[])
 
+  useEffect(()=>{
+
+    // if(receivedMessage?.receiverId === userInfo.id && receivedMessage.senderId === curre ){
+      
+    // }
+
+  },[]);
+
   //online status online/offline
   const checkOnlineStatus = (chat) => {
     const chatMember = chat?.members?.find((member) => member !== userInfo?.id);
@@ -130,6 +140,15 @@ const Chat = () => {
   return (
     <>
     <Box>
+    <Toaster 
+        position={'top-right'} 
+        reverseOrder={false}
+        toastOptions = {{
+            style : {
+                fontSize: '18px'
+            }
+        }}
+    />
      <NavBar/>
       {/* navbar */}
       <Stack direction="row" spacing={1} justifyContent="center">
