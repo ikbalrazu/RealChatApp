@@ -103,6 +103,17 @@ io.on('connection',(socket)=>{
     });
 
     socket.on("typingMessage",(data)=>{
-        console.log(data);
+        console.log("typing data",data);
+        console.log(data.receiverid);
+        const user = activeUsers.find((user)=>user.userId === data.receiverid);
+        console.log(user);
+        if(user !== undefined){
+            socket.to(user.socketId).emit('typingMessageGet',{
+                senderId: data.senderid,
+                receiverId: data.receiverid,
+                msg: data.msg
+            })
+        }
+        //console.log("typing data",data);
     })
 })
