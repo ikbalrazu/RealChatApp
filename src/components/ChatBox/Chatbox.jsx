@@ -16,6 +16,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Card from '@mui/material/Card';
 import { CardActionArea } from '@mui/material';
+import { ChatState } from '../../context/ChatProvider';
 
 //message sound
 import useSound from 'use-sound';
@@ -30,6 +31,12 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+
+    const [typingMessage, setTypingMessage] = useState();
+
+    const {
+        SocketConnect
+      } = ChatState();
 
     //message sound
     const [sendmsgPlay] = useSound(sendmsgsound);
@@ -92,6 +99,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         setSendMessage({...message, receiverId})
         //send message to database
         try{
+            setTypingMessage("");
             const {data} = await axios.post("/message",message);
             console.log(data);
             setMessages([...messages,data]);
@@ -150,6 +158,27 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     const handleClickClose = () => {
         setUserProfile(false);
     };
+
+    const handleChange = (e) => {
+        setNewMessage(e?.target?.value);
+
+        console.log(userData._id);
+        console.log(currentUser);
+        console.log(e?.target?.value);
+    
+        SocketConnect?.emit("typingMessage",{
+            senderid: currentUser,
+            receiverid: userData._id,
+            msg: e?.target?.value
+        })
+    }
+
+    useEffect(()=>{
+        SocketConnect.on("typingMessageGet",(data)=>{
+            console.log(data);
+            setTypingMessage(data);
+        })
+    },[]);
     
   return (
     <>
@@ -229,12 +258,22 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
                 </>
             ))}
             </div>
+
+            {typingMessage && typingMessage?.msg && typingMessage?.senderId === userData?._id ? <p>typing..</p> : <></>}
+            {/* <p>typing..</p> */}
+
             <div className="chat-sender">
-            {/* <textarea className='message-input' value={newMessage} onChange={(e)=>setNewMessage(e.target.value)} type="textarea" placeholder='message'/> */}
-            <InputEmoji
+            <textarea 
+            className='message-input' 
+            value={newMessage} 
+            onChange={(e)=>handleChange(e)} 
+            type="textarea" 
+            placeholder='message'
+            />
+            {/* <InputEmoji
             value={newMessage}
             onChange={setNewMessage}
-            />
+            /> */}
             <div><button className='send-btn' onClick={handleSend}>Send</button></div>
             </div>
             </>

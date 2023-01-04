@@ -11,9 +11,15 @@ const ChatProvider = ({children})=>{
     const [receivedMessage, setReceivedMessage] = useState(null);
     const [messages, setMessages] = useState([]);
 
+    //typing message show
+    const [senderid,setSenderId] = useState();
+    const [receiverid,setReceiverId] = useState();
+    const [msg,setMSG] = useState();
+
+
     //const socket = useRef();
-    //const SocketConnect = io("http://localhost:5000");
-    const SocketConnect = io("https://realchatapp-api.onrender.com");
+    const SocketConnect = io("http://localhost:5000");
+    //const SocketConnect = io("https://realchatapp-api.onrender.com");
 
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
 
@@ -22,6 +28,12 @@ const ChatProvider = ({children})=>{
           console.log(data)
           setReceivedMessage(data);
         });
+
+        // SocketConnect.emit("typingMessage",{
+        //     //senderid: id,
+        //     //receiverid: currentfriend._id
+        //     //msg: ""
+        // })
     },[]);
 
     useEffect(()=>{
@@ -44,7 +56,10 @@ const ChatProvider = ({children})=>{
             setReceivedMessage,
             messages,
             setMessages,
-            SocketConnect
+            SocketConnect,
+            setSenderId,
+            setReceiverId,
+            setMSG
         }}>
             {children}
         </ChatContext.Provider>
