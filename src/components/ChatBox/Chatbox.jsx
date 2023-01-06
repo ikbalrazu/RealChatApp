@@ -22,15 +22,12 @@ import { ChatState } from '../../context/ChatProvider';
 import useSound from 'use-sound';
 import sendmsgsound from '../../sound/sendmsg.mp3'
 
-import toast,{Toaster} from 'react-hot-toast';
-import { Socket } from 'socket.io-client';
-
 const ITEM_HEIGHT = 48;
 
 const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,online}) => {
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState("");
+    const [newMessage, setNewMessage] = useState();
 
     const [typingMessage, setTypingMessage] = useState();
 
@@ -54,9 +51,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     //fetching data for header
     useEffect(()=>{
         //console.log(chat);
-        console.log(currentUser);
+        //console.log(currentUser);
         const userId = chat?.members?.find((id)=>id!==currentUser);
-        console.log(chat?._id);
+        //console.log(chat?._id);
         const getUserData = async () => {
         try{
             const {data} =await axios.get(`/user/${userId}`)
@@ -75,10 +72,10 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         const fetchMessages = async () => {
           try {
             const { data } = await axios.get(`/message/${chat?._id}`)
-            console.log(chat?._id);
+            //console.log(chat?._id);
             setMessages(data);
           } catch (error) {
-            console.log(error);
+            //console.log(error);
           }
         };
     
@@ -87,23 +84,34 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
 
     //send message
     const handleSend = async() => {
-        console.log(newMessage);
-        const message = {
-            senderId : currentUser,
-            text: newMessage,
-            chatId: chat._id,
-        }
-        sendmsgPlay();
-        const receiverId = chat.members.find((id)=>id!==currentUser);
-        //send message to socket server
-        setSendMessage({...message, receiverId})
-        //send message to database
+
+        SocketConnect?.emit("typingMessage",{
+            senderid: currentUser,
+            receiverid: userData._id,
+            msg: ""
+        })
+
+        //console.log(newMessage);
+       
         try{
-            setTypingMessage("");
-            const {data} = await axios.post("/message",message);
-            console.log(data);
-            setMessages([...messages,data]);
-            setNewMessage("");
+
+            if(newMessage){
+                const message = {
+                    senderId : currentUser,
+                    text: newMessage,
+                    chatId: chat._id,
+                }
+                sendmsgPlay();
+                const receiverId = chat.members.find((id)=>id!==currentUser);
+                //send message to socket server
+                setSendMessage({...message, receiverId})
+                //send message to database
+                const {data} = await axios.post("/message",message);
+                //console.log(data);
+                setMessages([...messages,data]);
+                setNewMessage("");
+            }
+            
 
         }catch{
             console.log("error");
@@ -111,18 +119,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         
     }
 
-    // const InputHandler = (e) =>{
-    //     setNewMessage(e.target.value);
-    //     Socket.current.emit("typingMessage",{
-    //         senderId: myInfo.id,
-    //         receiverId: currentUser.id,
-    //         msg: e.target.value
-    //     })
-    // }
-
     //Receive message from parent component
     useEffect(()=>{
-        console.log("Message Arrived: ", receivedMessage);
+        //console.log("Message Arrived: ", receivedMessage);
         if(receivedMessage !== null && receivedMessage.chatId === chat?._id){
             setMessages([...messages, receivedMessage]);
         }
@@ -138,9 +137,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     const DeleteChat = async() => {
         
         const data = await axios.get(`chat/delete/${chat?._id}`);
-        console.log(data);
+        //console.log(data);
         const {userdata} = await axios.get(`/chat/${currentUser}`)
-        console.log(userdata);
+        //console.log(userdata);
         handleChat(userdata);
         setUserData(null);
         window.location.reload(false);
@@ -162,9 +161,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     const handleChange = (e) => {
         setNewMessage(e?.target?.value);
 
-        console.log(userData._id);
-        console.log(currentUser);
-        console.log(e?.target?.value);
+        // console.log(userData._id);
+        // console.log(currentUser);
+        // console.log(e?.target?.value);
     
         SocketConnect?.emit("typingMessage",{
             senderid: currentUser,
@@ -175,7 +174,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
 
     useEffect(()=>{
         SocketConnect.on("typingMessageGet",(data)=>{
-            console.log(data);
+            //console.log(data);
             setTypingMessage(data);
         })
     },[]);
@@ -195,14 +194,20 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     <div style={{height:"1000%"}}>
         {chat ? (
             <>
-            <Box>
+            <Box 
+            // sx={{border:"1px solid red"}}
+            >
                 <Stack direction='row' spacing={1} justifyContent="start">
                 <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>
                 <Box >
                 <Typography sx={{marginTop:"6px"}}>
                     {userData?.name}
                 </Typography>
-                <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>{online ? "online" : "offline"}</Typography>
+                {typingMessage && typingMessage?.msg && typingMessage?.senderId === userData?._id ? 
+                <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>typing..</Typography> 
+                : 
+                <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>{online ? "online" : "offline"}</Typography>}
+                {/* <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>{online ? "online" : "offline"}</Typography> */}
                 </Box>
 
                 <Box sx={{flexGrow:0}}>
@@ -247,7 +252,13 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
                 marginTop: "20px",
             }}
             />
-            <div className="chat-body" style={{height:"60vh"}}>
+            <div 
+            className="chat-body" 
+            style={{
+                height:"60vh",
+                // border:"1px solid green"
+            }}
+            >
             {messages.map((message,index)=>(
                 <>
                 <div ref={scroll} className={message.senderId === currentUser ? "message own" : "message"}>
@@ -258,17 +269,21 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
                 </>
             ))}
             </div>
-
-            {typingMessage && typingMessage?.msg && typingMessage?.senderId === userData?._id ? <p>typing..</p> : <></>}
-            {/* <p>typing..</p> */}
-
+            
             <div className="chat-sender">
-            <textarea 
+            {/* <textarea 
             className='message-input' 
             value={newMessage} 
             onChange={(e)=>handleChange(e)} 
             type="textarea" 
             placeholder='message'
+            /> */}
+            <input 
+            className='message-input' 
+            value={newMessage} 
+            onChange={(e)=>handleChange(e)} 
+            type="text" 
+            placeholder='Message'
             />
             {/* <InputEmoji
             value={newMessage}

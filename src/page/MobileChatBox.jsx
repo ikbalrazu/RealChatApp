@@ -19,6 +19,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Card from '@mui/material/Card';
 import { CardActionArea } from '@mui/material';
 
+//message sound
+import useSound from 'use-sound';
+import sendmsgsound from '../../src/sound/sendmsg.mp3'
+
 const ITEM_HEIGHT = 48;
 
 const MobileChatBox = () =>{
@@ -37,11 +41,17 @@ const MobileChatBox = () =>{
         messages,
         setMessages,
         sendMessage,
+        SocketConnect
     } = ChatState();
+
+    //message sound
+    const [sendmsgPlay] = useSound(sendmsgsound);
 
     const [userData, setUserData] = useState(null);
     // const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState("");
+    const [newMessage, setNewMessage] = useState();
+
+    const [typingMessage, setTypingMessage] = useState();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -93,20 +103,31 @@ const MobileChatBox = () =>{
 
     //send message
     const handleSend = async() => {
-        console.log(newMessage);
-        const message = {
-            senderId : currentUser,
-            text: newMessage,
-            chatId: currentChat._id,
-        }
-        const receiverId = currentChat.members.find((id)=>id!==currentUser);
-        //send message to socket server
-        setSendMessage({...message, receiverId})
-        //send message to database
+        SocketConnect?.emit("typingMessage",{
+            senderid: currentUser,
+            receiverid: userData?._id,
+            msg: ""
+        }) 
+
+        //console.log(newMessage);
+
         try{
-            const {data} = await axios.post("/message",message);
-            setMessages([...messages,data]);
-            setNewMessage("");
+            if(newMessage){
+                const message = {
+                    senderId : currentUser,
+                    text: newMessage,
+                    chatId: currentChat._id,
+                }
+                sendmsgPlay();
+                const receiverId = currentChat.members.find((id)=>id!==currentUser);
+                //send message to socket server
+                setSendMessage({...message, receiverId})
+                //send message to database
+                const {data} = await axios.post("/message",message);
+                setMessages([...messages,data]);
+                setNewMessage("");
+            }
+            
 
         }catch{
             console.log("error");
@@ -152,6 +173,27 @@ const MobileChatBox = () =>{
     };
     //profile dialog end
 
+    const handleChange = (e) => {
+        setNewMessage(e?.target?.value);
+
+        console.log(userData._id);
+        console.log(currentUser);
+        console.log(e?.target?.value);
+    
+        SocketConnect.emit("typingMessage",{
+            senderid: currentUser,
+            receiverid: userData._id,
+            msg: e?.target?.value
+        })
+    }
+
+    useEffect(()=>{
+        SocketConnect.on("typingMessageGet",(data)=>{
+            console.log(data);
+            setTypingMessage(data);
+        })
+    },[]);
+
 
     return(
         <>
@@ -170,6 +212,13 @@ const MobileChatBox = () =>{
                 <Typography sx={{marginTop:"10px"}}>
                     {userData?.name}
                 </Typography>
+                {typingMessage && typingMessage?.msg && typingMessage?.senderId === userData?._id ? 
+                <Typography color="green"  variant="caption" display="block" gutterBottom>typing..</Typography> 
+                : 
+                <>
+                </>
+                // <Typography color={online ? "green" : "white"}  variant="caption" display="block" gutterBottom>{online ? "online" : "offline"}</Typography>
+                }
                 </Box>
 
                 <Box sx={{flexGrow:0}}>
@@ -227,10 +276,17 @@ const MobileChatBox = () =>{
             </div>
             <div className="chat-sender">
             {/* <textarea className='message-input' value={newMessage} onChange={(e)=>setNewMessage(e.target.value)} type="textarea" placeholder='message'/> */}
-            <InputEmoji
+            <input 
+            className='message-input' 
+            value={newMessage} 
+            onChange={(e)=>handleChange(e)} 
+            type="text" 
+            placeholder='Message'
+            />
+            {/* <InputEmoji
             value={newMessage}
             onChange={setNewMessage}
-            />
+            /> */}
             <div><button className='send-btn' onClick={handleSend}>Send</button></div>
             </div>
             </>
