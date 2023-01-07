@@ -20,12 +20,20 @@ const SearchAndAdd = ({members,currentUser,handleChat}) => {
     { title: "Pulp Fiction", year: 1994 }
   ];
 
+  const userInfo = JSON.parse(localStorage.getItem("userdetails"));
+
+  const config = {
+    headers:{
+      Authorization: 'Bearer ' + userInfo?.token
+    }
+  };
+
   const handleSearch = async () => {
-    console.log(members);
+    //console.log(members);
 
     try{
       const {data} = await axios.post("/user/searchuser",members);
-      console.log("search result: ",data);
+      //console.log("search result: ",data);
       setSearchResult(data);
 
     }catch(error){
@@ -49,7 +57,7 @@ const SearchAndAdd = ({members,currentUser,handleChat}) => {
       // temp[index].btnStatus = "Added";
       // setSearchResult([...temp]);
       // setBtnStatus("Added");
-      const chatdata = await axios.get(`/chat/${currentUser}`);
+      const chatdata = await axios.get(`/chat/${currentUser}`,config);
       console.log(chatdata);
       handleChat(chatdata?.data);
       searchResult([null]);

@@ -78,15 +78,21 @@ const Login = () => {
     // };
     
   return (
-    <div>
-      
+    <div 
+    style={{
+      // border:"1px solid red"
+      }}>
       <Box
       onSubmit={handleSubmit(onSubmit)}
       bgcolor={"white"}
       component="form"
       maxWidth={320}
       maxHeight={1000}  
-      sx={{display:"flex",flexDirection:"column"}} 
+      sx={{
+        display:"flex",
+        flexDirection:"column",
+        // border:"1px solid green"
+      }} 
       justifyContent={"center"}
       alignItems="center"
       margin="auto"

@@ -11,6 +11,14 @@ const Conversation = ({data,currentUserId,online}) => {
   const [unseenmsg,setUnseenMsg] = useState();
 
   const {receivedMessage} = ChatState();
+
+  const userInfo = JSON.parse(localStorage.getItem("userdetails"));
+
+  const config = {
+    headers:{
+      Authorization: 'Bearer ' + userInfo?.token
+    }
+  };
   
   // console.log(receivedMessage?.text);
   // console.log(receivedMessage?.receiverId);
@@ -24,7 +32,7 @@ const Conversation = ({data,currentUserId,online}) => {
     const getUserData = async ()=> {
       try
       {
-        const {data} =await axios.get(`/user/${userId}`)
+        const {data} =await axios.get(`/user/${userId}`,config);
         //console.log(data);
         setUserData(data)
       }
@@ -56,7 +64,7 @@ const Conversation = ({data,currentUserId,online}) => {
 // }, []);
 
   return (
-    <Box sx={{marginLeft:"10px"}} onClick={()=>console.log("conversion")}>
+    <Box sx={{marginLeft:"10px"}}>
       <Stack direction="row" spacing={3}>
       <Badge color={online?"success":"default"} overlap="circular" badgeContent=" " variant="dot">
       <Avatar alt="Remy Sharp" src={userData?.picture} style={{ width: "50px", height: "50px" }}/>

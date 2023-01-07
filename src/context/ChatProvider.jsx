@@ -18,14 +18,14 @@ const ChatProvider = ({children})=>{
 
 
     //const socket = useRef();
-    const SocketConnect = io("http://localhost:5000");
-    //const SocketConnect = io("https://realchatapp-api.onrender.com");
+    //const SocketConnect = io("http://localhost:5000");
+    const SocketConnect = io("https://realchatapp-api.onrender.com");
 
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
 
     useEffect(() => {
         SocketConnect.on("recieve-message", (data) => {
-          console.log(data)
+          //console.log(data)
           setReceivedMessage(data);
         });
 

@@ -54,14 +54,18 @@ const Chat = () => {
 
   
  
-
+  const config = {
+    headers:{
+      Authorization: 'Bearer ' + userInfo?.token
+    }
+  };
 
   useEffect(()=>{
     const getChats = async()=>{
       try{
         // console.log(user._id);
-        const {data} = await axios.get(`/chat/${userInfo?.id}`)
-        console.log("user chat data:",data);
+        const {data} = await axios.get(`/chat/${userInfo?.id}`,config);
+        //console.log("user chat data:",data);
         setChats(data);
         
 
@@ -103,7 +107,7 @@ const Chat = () => {
   // },[]);
 
   useEffect(()=>{
-    console.log(userInfo?.token);
+    //console.log(userInfo?.token);
     if(!userInfo || !userInfo.token){
       loginpage('/');
     }

@@ -33,6 +33,12 @@ const MobileChatBox = () =>{
     const userInfo = JSON.parse(localStorage.getItem("userdetails"));
     const currentUser = userInfo?.id;
 
+    const config = {
+        headers:{
+          Authorization: 'Bearer ' + userInfo?.token
+        }
+    };
+
     const {
         currentChat,
         setSendMessage,
@@ -65,13 +71,13 @@ const MobileChatBox = () =>{
     //fetching data for header
     useEffect(()=>{
         // console.log(chat);
-        console.log(currentUser);
+        //console.log(currentUser);
         const userId = currentChat?.members?.find((id)=>id!==currentUser);
         //console.log(chat?._id);
         const getUserData = async () => {
         try{
-            const {data} =await axios.get(`/user/${userId}`)
-            console.log(data);
+            const {data} =await axios.get(`/user/${userId}`,config);
+            //console.log(data);
             setUserData(data);
         }catch (error) {
             console.log(error);
@@ -85,8 +91,8 @@ const MobileChatBox = () =>{
     useEffect(() => {
         const fetchMessages = async () => {
           try {
-            const { data } = await axios.get(`/message/${currentChat?._id}`)
-            console.log(data);
+            const { data } = await axios.get(`/message/${currentChat?._id}`,config);
+            //console.log(data);
             setMessages(data);
           } catch (error) {
             console.log(error);
@@ -97,8 +103,8 @@ const MobileChatBox = () =>{
     }, [currentChat]);
 
     useEffect(()=>{
-        console.log(receivedMessage);
-        console.log(newMessage);
+        // console.log(receivedMessage);
+        // console.log(newMessage);
     },[receivedMessage]);
 
     //send message
@@ -137,7 +143,7 @@ const MobileChatBox = () =>{
 
     //Receive message from parent component
     useEffect(()=>{
-        console.log("Message Arrived: ", receivedMessage);
+        //console.log("Message Arrived: ", receivedMessage);
         if(receivedMessage !== null && receivedMessage.chatId === currentChat?._id){
             setMessages([...messages, receivedMessage]);
         }
@@ -152,10 +158,10 @@ const MobileChatBox = () =>{
     //Delete chat
     const DeleteChat = async() => {
         
-        const data = await axios.get(`chat/delete/${currentChat?._id}`);
-        console.log(data);
-        const {userdata} = await axios.get(`/chat/${currentUser}`)
-        console.log(userdata);
+        const data = await axios.get(`chat/delete/${currentChat?._id}`,config);
+        //console.log(data);
+        const {userdata} = await axios.get(`/chat/${currentUser}`,config);
+        //console.log(userdata);
         // handleChat(userdata);
         setUserData(null);
         window.location.reload(false);
@@ -176,9 +182,9 @@ const MobileChatBox = () =>{
     const handleChange = (e) => {
         setNewMessage(e?.target?.value);
 
-        console.log(userData._id);
-        console.log(currentUser);
-        console.log(e?.target?.value);
+        // console.log(userData._id);
+        // console.log(currentUser);
+        // console.log(e?.target?.value);
     
         SocketConnect.emit("typingMessage",{
             senderid: currentUser,
@@ -189,7 +195,7 @@ const MobileChatBox = () =>{
 
     useEffect(()=>{
         SocketConnect.on("typingMessageGet",(data)=>{
-            console.log(data);
+            //console.log(data);
             setTypingMessage(data);
         })
     },[]);

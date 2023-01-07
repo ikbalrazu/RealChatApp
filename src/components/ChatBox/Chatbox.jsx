@@ -31,6 +31,8 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
 
     const [typingMessage, setTypingMessage] = useState();
 
+    const userInfo = JSON.parse(localStorage.getItem("userdetails"));
+
     const {
         SocketConnect
       } = ChatState();
@@ -48,6 +50,13 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     };
 
 
+    const config = {
+        headers:{
+          Authorization: 'Bearer ' + userInfo?.token
+        }
+    };
+
+
     //fetching data for header
     useEffect(()=>{
         //console.log(chat);
@@ -56,7 +65,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
         //console.log(chat?._id);
         const getUserData = async () => {
         try{
-            const {data} =await axios.get(`/user/${userId}`)
+            const {data} =await axios.get(`/user/${userId}`,config);
             //console.log(data);
             setUserData(data);
         }catch (error) {
@@ -71,7 +80,7 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     useEffect(() => {
         const fetchMessages = async () => {
           try {
-            const { data } = await axios.get(`/message/${chat?._id}`)
+            const { data } = await axios.get(`/message/${chat?._id}`,config);
             //console.log(chat?._id);
             setMessages(data);
           } catch (error) {
@@ -136,9 +145,9 @@ const Chatbox = ({chat,currentUser,setSendMessage,receivedMessage,handleChat,onl
     //Delete chat
     const DeleteChat = async() => {
         
-        const data = await axios.get(`chat/delete/${chat?._id}`);
+        const data = await axios.get(`chat/delete/${chat?._id}`,config);
         //console.log(data);
-        const {userdata} = await axios.get(`/chat/${currentUser}`)
+        const {userdata} = await axios.get(`/chat/${currentUser}`,config);
         //console.log(userdata);
         handleChat(userdata);
         setUserData(null);
