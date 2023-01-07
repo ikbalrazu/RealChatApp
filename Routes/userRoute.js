@@ -4,7 +4,7 @@ const authMiddleware = require('../Middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/:id', getUser);
+router.get('/:id', authMiddleware, getUser);
 router.get('/',authMiddleware,getAllUsers);
 router.post("/searchuser",getSelectedUser);
 router.post('/register',registerUser);

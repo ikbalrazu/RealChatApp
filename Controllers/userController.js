@@ -123,13 +123,13 @@ const getAllUsers = async(req,res) => {
 const getSelectedUser = async(req,res) => {
     //const userid = req.params.userid;
     const members = req.body;
-    console.log(members);
+    //console.log(members);
     // const userid = JSON.parse(members);
     // //const id = ["6320d82e14b88be49737c229","6320e1189cc67aad45b78797"];
     // console.log(members);
     try{
         const users = await User.find( { _id: { $nin: members } } )
-        console.log(members);
+        //console.log(members);
         res.status(200).json(users);
     }catch{
         console.log("error");
@@ -138,7 +138,7 @@ const getSelectedUser = async(req,res) => {
 
 const ExistUser = async(req,res)=>{
     const {email} = req.body;
-    console.log(email);
+    //console.log(email);
     const userExists = await User.findOne({email});
 
     if(userExists){
@@ -150,7 +150,7 @@ const ExistUser = async(req,res)=>{
 
 const ResetPasswordLink = async(req,res) => {
     const email = req.params.email;
-    console.log(email);
+    //console.log(email);
     const token = "hello12345"
     const userExists = await User.findOne({email});
 
@@ -190,7 +190,7 @@ const uploadImage = async(req,res) =>{
 const DeleteImage = async(req,res) =>{
     try {
         const {public_id} = req.body;
-        console.log(public_id);
+        //console.log(public_id);
         
         if(public_id){
             await cloudinary.uploader.destroy(public_id,function(err,result){
